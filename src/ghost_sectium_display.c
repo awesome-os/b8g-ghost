@@ -19,12 +19,28 @@ static const b8g_ghost_spec_t SECTIUM_DISPLAY_SPEC = {
   .sha256_hex   = "50badeec9a1882ea6997b327f207bc91366561c5e3bff56572cfb1e7fc85b923",
   .download_url = "https://github.com/awesome-os/sectium-browser/releases/download/v0.5.0-baseline/libsectium_display.dll"
 };
+#elif defined(__APPLE__)
+static const b8g_ghost_spec_t SECTIUM_DISPLAY_SPEC = {
+  .abi_magic    = B8G_ABI_MAGIC_V3,
+  .ghost_magic  = B8G_GHOST_MAGIC,
+  .filename     = "libsectium_display-macos-arm64.dylib",
+  .sha256_hex   = "8ed596430b5b2c67477abe5e55901ef1a54773b7180165a00564dc25c0dcdb1a",
+  .download_url = "https://github.com/awesome-os/sectium-browser/releases/download/v0.5.0-baseline/libsectium_display-macos-arm64.dylib"
+};
+#elif defined(__aarch64__)
+static const b8g_ghost_spec_t SECTIUM_DISPLAY_SPEC = {
+  .abi_magic    = B8G_ABI_MAGIC_V3,
+  .ghost_magic  = B8G_GHOST_MAGIC,
+  .filename     = "libsectium_display-linux-arm64.so",
+  .sha256_hex   = "c3c71874045b6a8babbcae78cc57b0f45b10a4b01d8f0f2dd7f5cc6a85d27f27",
+  .download_url = "https://github.com/awesome-os/sectium-browser/releases/download/v0.5.0-baseline/libsectium_display-linux-arm64.so"
+};
 #else
 static const b8g_ghost_spec_t SECTIUM_DISPLAY_SPEC = {
   .abi_magic    = B8G_ABI_MAGIC_V3,
   .ghost_magic  = B8G_GHOST_MAGIC,
   .filename     = "libsectium_display-linux-x64.so",
-  .sha256_hex   = "0000000000000000000000000000000000000000000000000000000000000000",
+  .sha256_hex   = "79b3427b1634cb6cb72a0481baae4b900d0d5b3ccbc82caffb286796eb2c32a3",
   .download_url = "https://github.com/awesome-os/sectium-browser/releases/download/v0.5.0-baseline/libsectium_display-linux-x64.so"
 };
 #endif

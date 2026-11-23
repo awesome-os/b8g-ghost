@@ -1,4 +1,4 @@
-name: CI — b8g-ghost (Ghost Libraries Multi-OS Build & Verify)
+name: CI — b8g-ghost (Win64 + Linux x64/ARM64 + Darwin ARM64 + Semantic Tests)
 
 on:
   push:
@@ -10,17 +10,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - uses: goto-bus-stop/setup-zig@v2
         with:
           version: 0.14.0
-      - name: Cross-Compile ghost_sectium_display (Win64 DLL + Linux x64/ARM64 SO)
+      - name: Run Ghost FFI & Dual-Layer Semantic Hasher Tests
+        run: node --test ghost-ffi.test.mts semantic-registry.test.mts
+      - name: Cross-Compile ghost_sectium_display (Win64 DLL + Linux x64/ARM64 SO + Darwin ARM64 DYLIB)
         run: |
           mkdir -p dist
           zig cc -target x86_64-windows-gnu -O2 -shared -s -Iinclude src/b8g_ghost.c src/ghost_sectium_display.c -o dist/ghost_sectium_display.dll -Wl,--out-implib,dist/libghost_sectium_display.dll.a
           zig cc -target x86_64-linux-gnu -O2 -shared -fPIC -s -Iinclude src/b8g_ghost.c src/ghost_sectium_display.c -o dist/ghost_sectium_display-linux-x64.so -ldl
           zig cc -target aarch64-linux-gnu -O2 -shared -fPIC -s -Iinclude src/b8g_ghost.c src/ghost_sectium_display.c -o dist/ghost_sectium_display-linux-arm64.so -ldl
+          zig cc -target aarch64-macos -O2 -shared -fPIC -Iinclude src/b8g_ghost.c src/ghost_sectium_display.c -o dist/ghost_sectium_display-macos-arm64.dylib
           ls -lh dist/
       - uses: actions/upload-artifact@v4
         with:
-          name: b8g-ghost-libs
+          name: b8g-ghost-libs-4os
           path: dist/
