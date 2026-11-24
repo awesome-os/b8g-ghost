@@ -60,7 +60,7 @@ function tarBin(): string {
   return process.platform === 'win32' ? 'C:\\Windows\\System32\\tar.exe' : 'tar';
 }
 
-export async function debloatPyPiWheel(pkgName: string) {
+export async function debloatPyPiWheel(pkgName: string, outDir?: string) {
   const workDir = mkdtempSync(join(tmpdir(), `ghost-debloat-${pkgName}-`));
   const unpackDir = join(workDir, 'unpacked');
   mkdirSync(unpackDir, { recursive: true });
@@ -86,8 +86,12 @@ export async function debloatPyPiWheel(pkgName: string) {
     const whlBytes = new Uint8Array(await (await fetch(wheel.url)).arrayBuffer());
     writeFileSync(whlPath, whlBytes);
 
-    // 3. Unpack wheel (ZIP) via system tar
-    execFileSync(tarBin(), ['-xf', whlPath, '-C', unpackDir], { stdio: 'pipe' });
+    // 3. Unpack wheel (ZIP) via system tar (Win32 bsdtar) or unzip (Linux/macOS)
+    if (process.platform === 'win32') {
+      execFileSync(tarBin(), ['-xf', whlPath, '-C', unpackDir], { stdio: 'pipe' });
+    } else {
+      execFileSync('unzip', ['-q', '-o', whlPath, '-d', unpackDir], { stdio: 'pipe' });
+    }
 
     const allFiles = walkFiles(unpackDir);
     let rawUnpackedBytes = 0;
@@ -149,10 +153,33 @@ export async function debloatPyPiWheel(pkgName: string) {
     writeFileSync(join(unpackDir, 'ghost-deps.json'), JSON.stringify(ghostDeps, null, 2) + '\n');
 
     // Stage 3: Repack debloated Ghost archive
-    const outPack = join(workDir, `${pkgName}-${meta.info.version}.ghost.tar.gz`);
+    const outFileName = `${pkgName}-${meta.info.version}.ghost.tar.gz`;
+    const outPack = join(workDir, outFileName);
     execFileSync(tarBin(), ['-czf', outPack, '-C', unpackDir, '.'], { stdio: 'pipe' });
-    const debloatedBytes = statSync(outPack).size;
-    const outSha = createHash('sha256').update(readFileSync(outPack)).digest('hex');
+    const outBuf = readFileSync(outPack);
+    const debloatedBytes = outBuf.byteLength;
+    const outSha = createHash('sha256').update(outBuf).digest('hex');
+
+    if (outDir) {
+      mkdirSync(outDir, { recursive: true });
+      writeFileSync(join(outDir, outSha), outBuf);
+      writeFileSync(
+        join(outDir, `${pkgName}.meta.json`),
+        JSON.stringify(
+          {
+            filename: outFileName,
+            sha256: outSha,
+            bytes: debloatedBytes,
+            original_bytes: whlBytes.byteLength,
+            unvendored_count: unvendoredLibs.length,
+            category: 'pypi-llm-stack',
+            download_url: `https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/${outSha}`,
+          },
+          null,
+          2
+        ) + '\n'
+      );
+    }
 
     const savedBytes = whlBytes.byteLength - debloatedBytes;
     const reductionPct = ((savedBytes / whlBytes.byteLength) * 100).toFixed(1);
@@ -173,5 +200,6 @@ export async function debloatPyPiWheel(pkgName: string) {
 
 if (process.argv[1]?.endsWith('ghost-debloat-ingest.mts')) {
   const pkg = process.argv[2] ?? 'pillow';
-  await debloatPyPiWheel(pkg);
+  const outArg = process.argv.find((a) => a.startsWith('--out-dir='))?.split('=')[1];
+  await debloatPyPiWheel(pkg, outArg);
 }

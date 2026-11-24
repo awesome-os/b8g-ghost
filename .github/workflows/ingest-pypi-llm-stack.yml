@@ -1,0 +1,61 @@
+name: Ingest Debloated Python LLM Stack into Canonical O(1) Ghost CAS (cas-v1)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ingest-pypi-llm-stack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Debloat & Un-Vendor Core Python LLM Stack Wheels -> cas-v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/pypi-out
+          for pkg in pillow numpy safetensors tokenizers tiktoken pydantic-core orjson cryptography lxml; do
+            echo ">>> Debloating PyPI LLM package: $pkg"
+            node ghost-debloat-ingest.mts "$pkg" --out-dir=/tmp/pypi-out
+          done
+
+          # Upload all newly debloated SHA-256 blobs into canonical cas-v1
+          BLOBS=$(find /tmp/pypi-out -maxdepth 1 -type f ! -name '*.json')
+          gh release upload cas-v1 $BLOBS --repo awesome-os/b8g-ghost --clobber
+
+          # Merge all *.meta.json entries into manifests/index.json
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const idx = JSON.parse(fs.readFileSync('manifests/index.json', 'utf8'));
+            for (const f of fs.readdirSync('/tmp/pypi-out').filter(x => x.endsWith('.meta.json')).sort()) {
+              const m = JSON.parse(fs.readFileSync(path.join('/tmp/pypi-out', f), 'utf8'));
+              idx.entries[m.filename] = {
+                filename: m.filename,
+                sha256: m.sha256,
+                bytes: m.bytes,
+                category: m.category,
+                download_url: m.download_url
+              };
+            }
+            const sorted = {};
+            for (const k of Object.keys(idx.entries).sort()) sorted[k] = idx.entries[k];
+            idx.entries = sorted;
+            idx.total_entries = Object.keys(sorted).length;
+            idx.updated_at = new Date().toISOString();
+            fs.writeFileSync('manifests/index.json', JSON.stringify(idx, null, 2) + '\n');
+            console.log('[pypi-llm-cas] Updated manifests/index.json -> total_entries=' + idx.total_entries);
+          "
+
+      - name: Commit Updated manifests/index.json to Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifests/index.json
+          git diff --cached --quiet || (git commit -m "feat(cas-v1): ingest 9 debloated Python LLM stack packages into canonical Ghost CAS" && git push origin main)
