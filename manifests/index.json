@@ -2,8 +2,8 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T07:31:14.478Z",
-  "total_entries": 152,
+  "updated_at": "2026-11-24T07:31:32.321Z",
+  "total_entries": 154,
   "entries": {
     "01-browser-split-shell.exe": {
       "filename": "01-browser-split-shell.exe",
@@ -293,6 +293,24 @@
       "bytes": 4666157,
       "category": "pypi-llm-stack",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/66b91d6771b4d873f64ad93250e4b82a2c2a517a6af480d1ea0796099c5009bc"
+    },
+    "dotnet-sdk-linux-x64.tar.zst": {
+      "filename": "dotnet-sdk-linux-x64.tar.zst",
+      "sha256": "35b456bf1d7bd53a30eeaccfdd3c6c6940b98ad07108e8f32249238d8c21349c",
+      "bytes": 171652976,
+      "raw_bytes": 211463422,
+      "version": "11.0.100",
+      "category": "dotnet-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/35b456bf1d7bd53a30eeaccfdd3c6c6940b98ad07108e8f32249238d8c21349c"
+    },
+    "dotnet-sdk-win64.tar.zst": {
+      "filename": "dotnet-sdk-win64.tar.zst",
+      "sha256": "0fa8b5ad34bafd4ad89e84d5f605cf28d971083374cd11f98b49c38996306119",
+      "bytes": 267880747,
+      "raw_bytes": 337835326,
+      "version": "11.0.100",
+      "category": "dotnet-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/0fa8b5ad34bafd4ad89e84d5f605cf28d971083374cd11f98b49c38996306119"
     },
     "electron-linux-arm64.tar.zst": {
       "filename": "electron-linux-arm64.tar.zst",
