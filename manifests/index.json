@@ -2,8 +2,8 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T03:11:48.710Z",
-  "total_entries": 129,
+  "updated_at": "2026-11-24T03:28:31.8313088Z",
+  "total_entries": 130,
   "entries": {
     "01-browser-split-shell.exe": {
       "filename": "01-browser-split-shell.exe",
@@ -872,13 +872,6 @@
       "category": "pypi-llm-stack",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/fdac46a5e54bd709a1d76386cef274f10d68a10856b9c1aee6a402adb8ff1920"
     },
-    "typescript-6.0.3-programmable.tar.gz": {
-      "filename": "typescript-6.0.3-programmable.tar.gz",
-      "sha256": "0d02fd5d632ba5ca4ab1a82708a58cc9a24b7bf10aa177de4887bb494acca119",
-      "bytes": 1764934,
-      "category": "toolchain",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/0d02fd5d632ba5ca4ab1a82708a58cc9a24b7bf10aa177de4887bb494acca119"
-    },
     "v8-include-eaf3708a.tar.gz": {
       "filename": "v8-include-eaf3708a.tar.gz",
       "sha256": "5df70d97db94eb9163b8baa26fc35d53a355140405281f4bb9c82315c9adc1c1",
@@ -934,6 +927,30 @@
       "bytes": 107054,
       "category": "chromium-shard",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4e5454ca4168b5d0f2e4746f1ea9a419e21874a6015f5e3c1a7c28892f6dc5d1"
+    },
+    "typescript-6.0.3-programmable.tar.gz": {
+      "filename": "typescript-6.0.3-programmable.tar.gz",
+      "sha256": null,
+      "bytes": 0,
+      "version": "6.0.3-wave2",
+      "category": "toolchain",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/",
+      "history": [
+        {
+          "sha256": "0d02fd5d632ba5ca4ab1a82708a58cc9a24b7bf10aa177de4887bb494acca119",
+          "bytes": 1764934,
+          "version": "6.0.3-wave1",
+          "retired_at": "2026-11-24T03:28:31.8172910Z"
+        }
+      ]
+    },
+    "code-oss.exe": {
+      "filename": "code-oss.exe",
+      "sha256": "933f99cd68d4442cf876e08cf7c53b73e98185c26ef0f5bd14387218a369f70a",
+      "bytes": 119808,
+      "version": "0.2.0",
+      "category": "code-oss-launcher",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/933f99cd68d4442cf876e08cf7c53b73e98185c26ef0f5bd14387218a369f70a"
     }
   }
 }
