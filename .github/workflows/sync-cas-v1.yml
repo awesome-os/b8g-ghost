@@ -1,0 +1,126 @@
+name: Sync Canonical O(1) Ghost CAS (cas-v1) & Commit manifests/index.json
+
+on:
+  workflow_dispatch:
+    inputs:
+      baseline_tag:
+        description: 'Sectium baseline tag to ingest into cas-v1'
+        required: true
+        default: 'v0.6.1-baseline'
+      holo_5os_tag:
+        description: 'Holo 5-OS shards tag to ingest into cas-v1'
+        required: true
+        default: 'v0.2.0-holo-5os'
+      toolchains_tag:
+        description: 'Ghost toolchains tag to ingest into cas-v1'
+        required: true
+        default: 'v0.1.0-ghost-toolchains'
+
+permissions:
+  contents: write
+
+jobs:
+  sync-cas-v1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Ensure Canonical cas-v1 Release Exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view cas-v1 --repo awesome-os/b8g-ghost >/dev/null 2>&1 || \
+            gh release create cas-v1 --repo awesome-os/b8g-ghost \
+              --title "Canonical O(1) Ghost CAS Store (cas-v1)" \
+              --notes "Single content-addressed remote CAS store for Awesome-OS & Sectium. Every asset is named directly by its FIPS 180-4 SHA-256: \`https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/<sha256>\`. Human-readable mappings live in \`manifests/index.json\`."
+
+      - name: Ingest Blobs into O(1) cas-v1 & Emit manifests/index.json
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASELINE_TAG: ${{ inputs.baseline_tag || 'v0.6.1-baseline' }}
+          HOLO_5OS_TAG: ${{ inputs.holo_5os_tag || 'v0.2.0-holo-5os' }}
+          TOOLCHAINS_TAG: ${{ inputs.toolchains_tag || 'v0.1.0-ghost-toolchains' }}
+        run: |
+          mkdir -p /tmp/cas-in/baseline /tmp/cas-in/holo5os /tmp/cas-in/toolchains /tmp/cas-upload manifests
+
+          # Fetch existing cas-v1 asset names so already-uploaded SHA-256 blobs are skipped in O(1)
+          gh release view cas-v1 --repo awesome-os/b8g-ghost --json assets -q '.assets[].name' > /tmp/existing-cas.txt || true
+
+          echo "Downloading baseline ($BASELINE_TAG)..."
+          gh release download "$BASELINE_TAG" --repo awesome-os/sectium-browser --dir /tmp/cas-in/baseline --clobber || true
+
+          echo "Downloading holo-5os ($HOLO_5OS_TAG)..."
+          gh release download "$HOLO_5OS_TAG" --repo awesome-os/upstream-mirrors --dir /tmp/cas-in/holo5os --clobber || true
+
+          echo "Downloading ghost-toolchains ($TOOLCHAINS_TAG)..."
+          gh release download "$TOOLCHAINS_TAG" --repo awesome-os/upstream-mirrors --pattern "ghost-zig*" --pattern "ghost-ninja*" --pattern "ghost-winsdk*" --dir /tmp/cas-in/toolchains --clobber || true
+
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const crypto = require('crypto');
+
+            const existing = new Set(fs.readFileSync('/tmp/existing-cas.txt', 'utf8').split(/\r?\n/).filter(Boolean));
+            const entries = {};
+            const toUpload = [];
+            const sources = [
+              { dir: '/tmp/cas-in/baseline', category: 'baseline' },
+              { dir: '/tmp/cas-in/holo5os', category: 'holo-5os' },
+              { dir: '/tmp/cas-in/toolchains', category: 'toolchain' },
+            ];
+
+            for (const src of sources) {
+              if (!fs.existsSync(src.dir)) continue;
+              for (const file of fs.readdirSync(src.dir).sort()) {
+                if (file.endsWith('.txt') || file.endsWith('.dll.a') || file === 'RollingReleaseManifest.json' || file === 'ghost-index.json') continue;
+                const full = path.join(src.dir, file);
+                const st = fs.statSync(full);
+                if (!st.isFile() || st.size === 0) continue;
+                const buf = fs.readFileSync(full);
+                const sha256 = crypto.createHash('sha256').update(buf).digest('hex');
+                entries[file] = {
+                  filename: file,
+                  sha256,
+                  bytes: st.size,
+                  category: src.category,
+                  download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/' + sha256
+                };
+                if (!existing.has(sha256)) {
+                  existing.add(sha256);
+                  const dest = path.join('/tmp/cas-upload', sha256);
+                  fs.copyFileSync(full, dest);
+                  toUpload.push(dest);
+                }
+              }
+            }
+
+            const sorted = {};
+            for (const k of Object.keys(entries).sort()) sorted[k] = entries[k];
+            const doc = {
+              schema: 'b8g-ghost-cas-index-v1',
+              cas_base_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1',
+              baseline_tag: process.env.BASELINE_TAG,
+              updated_at: new Date().toISOString(),
+              total_entries: Object.keys(sorted).length,
+              entries: sorted
+            };
+            fs.writeFileSync('manifests/index.json', JSON.stringify(doc, null, 2) + '\n');
+            console.log('[cas-v1] Indexed', doc.total_entries, 'entries | New unique SHA-256 blobs to upload:', toUpload.length);
+          "
+
+          if [ -n "$(ls -A /tmp/cas-upload 2>/dev/null)" ]; then
+            gh release upload cas-v1 /tmp/cas-upload/* --repo awesome-os/b8g-ghost --clobber
+          else
+            echo "[cas-v1] All SHA-256 blobs already present in cas-v1 (0 uploads needed!)"
+          fi
+
+      - name: Commit manifests/index.json to Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifests/index.json
+          git diff --cached --quiet || (git commit -m "chore(cas-v1): update canonical manifests/index.json" && git push origin main)

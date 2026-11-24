@@ -180,8 +180,20 @@ export async function ghostFFI<T extends Record<string, GhostFFISymbolDef>>(
   };
 }
 
+export const CANONICAL_GHOST_CAS_BASE =
+  'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1';
+
 export const DEFAULT_GHOST_INDEX_URL =
-  'https://raw.githubusercontent.com/awesome-os/sectium-browser/main/manifests/ghost-index.json';
+  'https://raw.githubusercontent.com/awesome-os/b8g-ghost/main/manifests/index.json';
+
+/** Direct O(1) remote CAS URL for any content-addressed SHA-256 blob (zero repo/tag indirection). */
+export function canonicalGhostCasUrl(sha256: string, baseUrl: string = CANONICAL_GHOST_CAS_BASE): string {
+  const hex = sha256.toLowerCase();
+  if (!/^[0-9a-f]{64}$/.test(hex)) {
+    throw new Error(`Invalid SHA-256 hex digest: "${sha256}"`);
+  }
+  return `${baseUrl}/${hex}`;
+}
 
 export interface UnifiedGhostIndexDoc {
   readonly schema: string;
