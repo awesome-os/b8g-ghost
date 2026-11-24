@@ -2,8 +2,8 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T05:29:50.189Z",
-  "total_entries": 149,
+  "updated_at": "2026-11-24T06:40:33.050Z",
+  "total_entries": 150,
   "entries": {
     "01-browser-split-shell.exe": {
       "filename": "01-browser-split-shell.exe",
@@ -1097,6 +1097,15 @@
       "bytes": 13623456,
       "category": "pypi-llm-stack",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/cc848117329feeb691c8e9fcb705285251174c0b86124c546b6b96902eec9508"
+    },
+    "obs-win64.tar.zst": {
+      "filename": "obs-win64.tar.zst",
+      "sha256": "aac72a44e588423802083c2ad5bc2df0a3cbbe6aa0f52a2e9493fbd00c857d3c",
+      "bytes": 191390502,
+      "raw_bytes": 235774237,
+      "version": "33.0.3",
+      "category": "obs-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/aac72a44e588423802083c2ad5bc2df0a3cbbe6aa0f52a2e9493fbd00c857d3c"
     },
     "orjson-3.13.0.ghost.tar.gz": {
       "filename": "orjson-3.13.0.ghost.tar.gz",
