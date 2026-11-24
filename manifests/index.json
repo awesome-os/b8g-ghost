@@ -2,7 +2,7 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T20:27:48.406Z",
+  "updated_at": "2026-11-24T20:58:38.806Z",
   "total_entries": 156,
   "entries": {
     "01-browser-split-shell.exe": {
@@ -349,12 +349,20 @@
     },
     "dotnet-sdk-win64.tar.zst": {
       "filename": "dotnet-sdk-win64.tar.zst",
-      "sha256": "0fa8b5ad34bafd4ad89e84d5f605cf28d971083374cd11f98b49c38996306119",
-      "bytes": 267880747,
+      "sha256": "25986dd3b246dab4b99c66bc251d6a07eaa7ae3130df86e5e5a56a0a80a4301b",
+      "bytes": 267880559,
       "raw_bytes": 337835326,
       "version": "11.0.100",
       "category": "dotnet-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/0fa8b5ad34bafd4ad89e84d5f605cf28d971083374cd11f98b49c38996306119"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/25986dd3b246dab4b99c66bc251d6a07eaa7ae3130df86e5e5a56a0a80a4301b",
+      "history": [
+        {
+          "sha256": "0fa8b5ad34bafd4ad89e84d5f605cf28d971083374cd11f98b49c38996306119",
+          "bytes": 267880747,
+          "version": "11.0.100",
+          "retired_at": "2026-11-24T20:58:38.805Z"
+        }
+      ]
     },
     "electron-linux-arm64.tar.zst": {
       "filename": "electron-linux-arm64.tar.zst",
