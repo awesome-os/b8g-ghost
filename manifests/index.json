@@ -2,8 +2,8 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T01:32:56.105Z",
-  "total_entries": 98,
+  "updated_at": "2026-11-24T02:36:34.650Z",
+  "total_entries": 107,
   "entries": {
     "01-browser-split-shell.exe": {
       "filename": "01-browser-split-shell.exe",
@@ -89,6 +89,34 @@
       "category": "baseline",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/56ac6e2d621593811f7907f9d31ecb7c454852b4f3bdaba69a1fb71b18decbbf"
     },
+    "b8g-ghost-abi-linux-arm64.node": {
+      "filename": "b8g-ghost-abi-linux-arm64.node",
+      "sha256": "a82b3508e9b65722bf4f0aa8668814ec2a300762186d0103661b2152f538d3d6",
+      "bytes": 12728,
+      "category": "napi-addon",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/a82b3508e9b65722bf4f0aa8668814ec2a300762186d0103661b2152f538d3d6"
+    },
+    "b8g-ghost-abi-linux-x64.node": {
+      "filename": "b8g-ghost-abi-linux-x64.node",
+      "sha256": "affad09744171bf96be274e36c1936ce483ad16efcd11f647a6f0ddcb72e0758",
+      "bytes": 12616,
+      "category": "napi-addon",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/affad09744171bf96be274e36c1936ce483ad16efcd11f647a6f0ddcb72e0758"
+    },
+    "b8g-ghost-abi-macos-arm64.node": {
+      "filename": "b8g-ghost-abi-macos-arm64.node",
+      "sha256": "2b8e82b2b817a3815a78557ed9eef0d84ec2559e67ba70c89f3902635e0bc07e",
+      "bytes": 53984,
+      "category": "napi-addon",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/2b8e82b2b817a3815a78557ed9eef0d84ec2559e67ba70c89f3902635e0bc07e"
+    },
+    "b8g-ghost-abi-win64.node": {
+      "filename": "b8g-ghost-abi-win64.node",
+      "sha256": "8bab770bd29525ee40b190c1265614dee1d9d75ecd28475cc5f18558c24bb9b9",
+      "bytes": 27648,
+      "category": "napi-addon",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8bab770bd29525ee40b190c1265614dee1d9d75ecd28475cc5f18558c24bb9b9"
+    },
     "b8g-ghost-sdk.tar.gz": {
       "filename": "b8g-ghost-sdk.tar.gz",
       "sha256": "cfc0c2de22352f24104e9b8c104a771202ed780b6b84fae960aec51ecd83b633",
@@ -172,6 +200,13 @@
       "bytes": 2045,
       "category": "baseline",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/628b3dd4f087d4b315ae79e2633a84fb95706dea069f74df06f5d8444520d223"
+    },
+    "cryptography-50.0.2.ghost.tar.gz": {
+      "filename": "cryptography-50.0.2.ghost.tar.gz",
+      "sha256": "66b91d6771b4d873f64ad93250e4b82a2c2a517a6af480d1ea0796099c5009bc",
+      "bytes": 4666157,
+      "category": "pypi-llm-stack",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/66b91d6771b4d873f64ad93250e4b82a2c2a517a6af480d1ea0796099c5009bc"
     },
     "expat-include-0d6dacc.tar.gz": {
       "filename": "expat-include-0d6dacc.tar.gz",
@@ -579,6 +614,48 @@
       "category": "baseline",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/0ef951f1f9904563e5b7619336390cd163a8a7c6b4f103b35de3fe2de073d943"
     },
+    "lxml-6.1.3.ghost.tar.gz": {
+      "filename": "lxml-6.1.3.ghost.tar.gz",
+      "sha256": "8fe7433aa0fe019fdac259b5f77681fd4afd0a6da499393eeda2d8930b1166c2",
+      "bytes": 4993419,
+      "category": "pypi-llm-stack",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8fe7433aa0fe019fdac259b5f77681fd4afd0a6da499393eeda2d8930b1166c2"
+    },
+    "numpy-2.5.5.ghost.tar.gz": {
+      "filename": "numpy-2.5.5.ghost.tar.gz",
+      "sha256": "cc848117329feeb691c8e9fcb705285251174c0b86124c546b6b96902eec9508",
+      "bytes": 13623456,
+      "category": "pypi-llm-stack",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/cc848117329feeb691c8e9fcb705285251174c0b86124c546b6b96902eec9508"
+    },
+    "orjson-3.13.0.ghost.tar.gz": {
+      "filename": "orjson-3.13.0.ghost.tar.gz",
+      "sha256": "61bb821033dc4fb7a3298fcccf16cd19bbaf39d1a9d3f31617c597a04c9d5c25",
+      "bytes": 125563,
+      "category": "pypi-llm-stack",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/61bb821033dc4fb7a3298fcccf16cd19bbaf39d1a9d3f31617c597a04c9d5c25"
+    },
+    "pillow-13.0.0.ghost.tar.gz": {
+      "filename": "pillow-13.0.0.ghost.tar.gz",
+      "sha256": "bf0bf957e29f49d1c312f3555c90cef01f71f2867e55921242c0f89a1046bd17",
+      "bytes": 5071851,
+      "category": "pypi-llm-stack",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/bf0bf957e29f49d1c312f3555c90cef01f71f2867e55921242c0f89a1046bd17"
+    },
+    "pydantic-core-2.50.5.ghost.tar.gz": {
+      "filename": "pydantic-core-2.50.5.ghost.tar.gz",
+      "sha256": "8481e6f9aa578e88587280830a93aa72c34a3b082d334a7dbf17dbd473478505",
+      "bytes": 2187207,
+      "category": "pypi-llm-stack",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8481e6f9aa578e88587280830a93aa72c34a3b082d334a7dbf17dbd473478505"
+    },
+    "safetensors-0.8.0.ghost.tar.gz": {
+      "filename": "safetensors-0.8.0.ghost.tar.gz",
+      "sha256": "b4e0e4d06513c09185e4a539dcf0515f1d7afde02a3ba63de99a9041d1e99a00",
+      "bytes": 496755,
+      "category": "pypi-llm-stack",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/b4e0e4d06513c09185e4a539dcf0515f1d7afde02a3ba63de99a9041d1e99a00"
+    },
     "sectium-browser.exe": {
       "filename": "sectium-browser.exe",
       "sha256": "4e398fbca07caf39da216462b9568b7d66563e0901f5a0941d33511d948548a0",
@@ -606,6 +683,27 @@
       "bytes": 821733,
       "category": "chromium-shard",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/42a59b7f82b7502d35cdc681643e32a69910bf416d20b430fed3f489f7f49f28"
+    },
+    "tiktoken-0.14.0.ghost.tar.gz": {
+      "filename": "tiktoken-0.14.0.ghost.tar.gz",
+      "sha256": "19d50c7b48573f42a7d93b3c704c9c8d78d652849c1306cc442e2a1d34195a07",
+      "bytes": 1204887,
+      "category": "pypi-llm-stack",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/19d50c7b48573f42a7d93b3c704c9c8d78d652849c1306cc442e2a1d34195a07"
+    },
+    "tokenizers-0.23.3.ghost.tar.gz": {
+      "filename": "tokenizers-0.23.3.ghost.tar.gz",
+      "sha256": "fdac46a5e54bd709a1d76386cef274f10d68a10856b9c1aee6a402adb8ff1920",
+      "bytes": 3276585,
+      "category": "pypi-llm-stack",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/fdac46a5e54bd709a1d76386cef274f10d68a10856b9c1aee6a402adb8ff1920"
+    },
+    "typescript-6.0.3-programmable.tar.gz": {
+      "filename": "typescript-6.0.3-programmable.tar.gz",
+      "sha256": "0d02fd5d632ba5ca4ab1a82708a58cc9a24b7bf10aa177de4887bb494acca119",
+      "bytes": 1764934,
+      "category": "toolchain",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/0d02fd5d632ba5ca4ab1a82708a58cc9a24b7bf10aa177de4887bb494acca119"
     },
     "v8-include-eaf3708a.tar.gz": {
       "filename": "v8-include-eaf3708a.tar.gz",
@@ -655,41 +753,6 @@
       "bytes": 107054,
       "category": "chromium-shard",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4e5454ca4168b5d0f2e4746f1ea9a419e21874a6015f5e3c1a7c28892f6dc5d1"
-    },
-    "typescript-6.0.3-programmable.tar.gz": {
-      "filename": "typescript-6.0.3-programmable.tar.gz",
-      "sha256": "0d02fd5d632ba5ca4ab1a82708a58cc9a24b7bf10aa177de4887bb494acca119",
-      "bytes": 1764934,
-      "category": "toolchain",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/0d02fd5d632ba5ca4ab1a82708a58cc9a24b7bf10aa177de4887bb494acca119"
-    },
-    "b8g-ghost-abi-linux-arm64.node": {
-      "filename": "b8g-ghost-abi-linux-arm64.node",
-      "sha256": "a82b3508e9b65722bf4f0aa8668814ec2a300762186d0103661b2152f538d3d6",
-      "bytes": 12728,
-      "category": "napi-addon",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/a82b3508e9b65722bf4f0aa8668814ec2a300762186d0103661b2152f538d3d6"
-    },
-    "b8g-ghost-abi-linux-x64.node": {
-      "filename": "b8g-ghost-abi-linux-x64.node",
-      "sha256": "affad09744171bf96be274e36c1936ce483ad16efcd11f647a6f0ddcb72e0758",
-      "bytes": 12616,
-      "category": "napi-addon",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/affad09744171bf96be274e36c1936ce483ad16efcd11f647a6f0ddcb72e0758"
-    },
-    "b8g-ghost-abi-macos-arm64.node": {
-      "filename": "b8g-ghost-abi-macos-arm64.node",
-      "sha256": "2b8e82b2b817a3815a78557ed9eef0d84ec2559e67ba70c89f3902635e0bc07e",
-      "bytes": 53984,
-      "category": "napi-addon",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/2b8e82b2b817a3815a78557ed9eef0d84ec2559e67ba70c89f3902635e0bc07e"
-    },
-    "b8g-ghost-abi-win64.node": {
-      "filename": "b8g-ghost-abi-win64.node",
-      "sha256": "8bab770bd29525ee40b190c1265614dee1d9d75ecd28475cc5f18558c24bb9b9",
-      "bytes": 27648,
-      "category": "napi-addon",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8bab770bd29525ee40b190c1265614dee1d9d75ecd28475cc5f18558c24bb9b9"
     }
   }
 }
