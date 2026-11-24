@@ -1,0 +1,464 @@
+{
+  "schema": "b8g-ghost-cas-index-v1",
+  "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
+  "baseline_tag": "v0.6.1-baseline",
+  "updated_at": "2026-11-24T00:36:42.589Z",
+  "total_entries": 65,
+  "entries": {
+    "01-browser-split-shell.exe": {
+      "filename": "01-browser-split-shell.exe",
+      "sha256": "5b87b80b0f583a7b96d06b06c6caa04924b833d08066b726b64fc4b7799a031d",
+      "bytes": 205312,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/5b87b80b0f583a7b96d06b06c6caa04924b833d08066b726b64fc4b7799a031d"
+    },
+    "02-ide-workbench-shell.exe": {
+      "filename": "02-ide-workbench-shell.exe",
+      "sha256": "0908cf0549343030c992387cbfca4a05047bba52c18fa2a6dd520d9087b7bc2c",
+      "bytes": 206848,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/0908cf0549343030c992387cbfca4a05047bba52c18fa2a6dd520d9087b7bc2c"
+    },
+    "03-tiling-wm-shell.exe": {
+      "filename": "03-tiling-wm-shell.exe",
+      "sha256": "e6c1243aaf96b9e30930a7ffc4835b2656c17869613ce010721245d012623fac",
+      "bytes": 197120,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/e6c1243aaf96b9e30930a7ffc4835b2656c17869613ce010721245d012623fac"
+    },
+    "04-command-palette-launcher.exe": {
+      "filename": "04-command-palette-launcher.exe",
+      "sha256": "353e62701fff1c1ea3ec011760e4f39b4dbdcd7a9cc6cc84f5b4f0366f6cac00",
+      "bytes": 203264,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/353e62701fff1c1ea3ec011760e4f39b4dbdcd7a9cc6cc84f5b4f0366f6cac00"
+    },
+    "05-multi-agent-world-shell.exe": {
+      "filename": "05-multi-agent-world-shell.exe",
+      "sha256": "f356ee1324dd329845e5fef6068068957ebbe1e50df62242521f638648512696",
+      "bytes": 204288,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f356ee1324dd329845e5fef6068068957ebbe1e50df62242521f638648512696"
+    },
+    "06-node-graph-studio-shell.exe": {
+      "filename": "06-node-graph-studio-shell.exe",
+      "sha256": "78e9e77df89a4ee9bb256d34d85647cd20dbf765a2671578357d65ca009d584f",
+      "bytes": 201216,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/78e9e77df89a4ee9bb256d34d85647cd20dbf765a2671578357d65ca009d584f"
+    },
+    "07-docking-dashboard-shell.exe": {
+      "filename": "07-docking-dashboard-shell.exe",
+      "sha256": "0413e56f70aa8ad2b2fc4c8d588ba43eb2c204daccff75a919aa3bc6cca6de81",
+      "bytes": 204800,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/0413e56f70aa8ad2b2fc4c8d588ba43eb2c204daccff75a919aa3bc6cca6de81"
+    },
+    "08-tray-popover-widget-shell.exe": {
+      "filename": "08-tray-popover-widget-shell.exe",
+      "sha256": "4ab09aeaedd19718cc8cef5b8ff0eabc092acbc583e5020491ef0612a14fe7d4",
+      "bytes": 193536,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4ab09aeaedd19718cc8cef5b8ff0eabc092acbc583e5020491ef0612a14fe7d4"
+    },
+    "args-linux-x64.gn": {
+      "filename": "args-linux-x64.gn",
+      "sha256": "dc42f7cb5425fbf89fdb80fb1dd1442386705446f3022230a7ca10ed9cd6a80d",
+      "bytes": 882,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/dc42f7cb5425fbf89fdb80fb1dd1442386705446f3022230a7ca10ed9cd6a80d"
+    },
+    "args-win64.gn": {
+      "filename": "args-win64.gn",
+      "sha256": "56ac6e2d621593811f7907f9d31ecb7c454852b4f3bdaba69a1fb71b18decbbf",
+      "bytes": 781,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/56ac6e2d621593811f7907f9d31ecb7c454852b4f3bdaba69a1fb71b18decbbf"
+    },
+    "b8g-ghost-sdk.tar.gz": {
+      "filename": "b8g-ghost-sdk.tar.gz",
+      "sha256": "cfc0c2de22352f24104e9b8c104a771202ed780b6b84fae960aec51ecd83b633",
+      "bytes": 13081,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/cfc0c2de22352f24104e9b8c104a771202ed780b6b84fae960aec51ecd83b633"
+    },
+    "b8g-shim-linux-arm64": {
+      "filename": "b8g-shim-linux-arm64",
+      "sha256": "646ad8a435189db06c7e24a1417117d730fb10a8ae16d016c80292d47fa510ad",
+      "bytes": 44984,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/646ad8a435189db06c7e24a1417117d730fb10a8ae16d016c80292d47fa510ad"
+    },
+    "b8g-shim-linux-x64": {
+      "filename": "b8g-shim-linux-x64",
+      "sha256": "d7d701ea8ebc16595b92eaa321332033ce17f4fe45d9453431dcfef3dee14544",
+      "bytes": 38024,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/d7d701ea8ebc16595b92eaa321332033ce17f4fe45d9453431dcfef3dee14544"
+    },
+    "b8g-shim-macos-arm64": {
+      "filename": "b8g-shim-macos-arm64",
+      "sha256": "aa2fc945ab2d1f80263edba55dd183419a2114826a99cadcc9d5209df06ec879",
+      "bytes": 52040,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/aa2fc945ab2d1f80263edba55dd183419a2114826a99cadcc9d5209df06ec879"
+    },
+    "b8g-shim.exe": {
+      "filename": "b8g-shim.exe",
+      "sha256": "4e916c764be73cbaf50f04c518c74b05451efe91d1d9c6804207702b5f7b5748",
+      "bytes": 29696,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4e916c764be73cbaf50f04c518c74b05451efe91d1d9c6804207702b5f7b5748"
+    },
+    "bun-neon-v8.exe": {
+      "filename": "bun-neon-v8.exe",
+      "sha256": "0c90fea2ce8bae2a75303e4a77246ee5498dbbcb8f87ba12ccef8300fa01b195",
+      "bytes": 71168,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/0c90fea2ce8bae2a75303e4a77246ee5498dbbcb8f87ba12ccef8300fa01b195"
+    },
+    "chromium-brand-overlay.json": {
+      "filename": "chromium-brand-overlay.json",
+      "sha256": "628b3dd4f087d4b315ae79e2633a84fb95706dea069f74df06f5d8444520d223",
+      "bytes": 2045,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/628b3dd4f087d4b315ae79e2633a84fb95706dea069f74df06f5d8444520d223"
+    },
+    "ghost-4os-manifest.json": {
+      "filename": "ghost-4os-manifest.json",
+      "sha256": "71f315d0bdfafdfeb5266e12d1f77d12be53c8f08934a6f3d3486266b4595735",
+      "bytes": 4493,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/71f315d0bdfafdfeb5266e12d1f77d12be53c8f08934a6f3d3486266b4595735"
+    },
+    "ghost-5os-manifest.json": {
+      "filename": "ghost-5os-manifest.json",
+      "sha256": "6bf095c2b66ff3901a8dab60b95106b65bef8c3f06cb5fbb6d1fcc6421dbb6c4",
+      "bytes": 5703,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/6bf095c2b66ff3901a8dab60b95106b65bef8c3f06cb5fbb6d1fcc6421dbb6c4"
+    },
+    "ghost-ninja-1.12.1-linux-x64.zip": {
+      "filename": "ghost-ninja-1.12.1-linux-x64.zip",
+      "sha256": "6f98805688d19672bd699fbbfa2c2cf0fc054ac3df1f0e6a47664d963d530255",
+      "bytes": 123084,
+      "category": "toolchain",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/6f98805688d19672bd699fbbfa2c2cf0fc054ac3df1f0e6a47664d963d530255"
+    },
+    "ghost-ninja-1.12.1-macos.zip": {
+      "filename": "ghost-ninja-1.12.1-macos.zip",
+      "sha256": "89a287444b5b3e98f88a945afa50ce937b8ffd1dcc59c555ad9b1baf855298c9",
+      "bytes": 281130,
+      "category": "toolchain",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/89a287444b5b3e98f88a945afa50ce937b8ffd1dcc59c555ad9b1baf855298c9"
+    },
+    "ghost-ninja-1.12.1-win64.zip": {
+      "filename": "ghost-ninja-1.12.1-win64.zip",
+      "sha256": "f550fec705b6d6ff58f2db3c374c2277a37691678d6aba463adcbb129108467a",
+      "bytes": 275425,
+      "category": "toolchain",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f550fec705b6d6ff58f2db3c374c2277a37691678d6aba463adcbb129108467a"
+    },
+    "ghost-shards-manifest.json": {
+      "filename": "ghost-shards-manifest.json",
+      "sha256": "9ff98ea8a67467ffc2aae75968e616223a76f38dee7c4b52c16edbada6d9fce1",
+      "bytes": 6503,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/9ff98ea8a67467ffc2aae75968e616223a76f38dee7c4b52c16edbada6d9fce1"
+    },
+    "ghost-toolchains-manifest.json": {
+      "filename": "ghost-toolchains-manifest.json",
+      "sha256": "bf95c2532c83eac706523092be9d39ec8c218eb289995253ae9096faf895e012",
+      "bytes": 3613,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/bf95c2532c83eac706523092be9d39ec8c218eb289995253ae9096faf895e012"
+    },
+    "ghost-winsdk-msvc-x64.tar.zst": {
+      "filename": "ghost-winsdk-msvc-x64.tar.zst",
+      "sha256": "80960432afd58068bd2433bec2ddf658d722f018d6a7da8bd5846377180778db",
+      "bytes": 57714681,
+      "category": "toolchain",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/80960432afd58068bd2433bec2ddf658d722f018d6a7da8bd5846377180778db"
+    },
+    "ghost-zig-0.14.0-linux-x64.tar.xz": {
+      "filename": "ghost-zig-0.14.0-linux-x64.tar.xz",
+      "sha256": "473ec26806133cf4d1918caf1a410f8403a13d979726a9045b421b685031a982",
+      "bytes": 49091960,
+      "category": "toolchain",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/473ec26806133cf4d1918caf1a410f8403a13d979726a9045b421b685031a982"
+    },
+    "ghost-zig-0.14.0-macos-arm64.tar.xz": {
+      "filename": "ghost-zig-0.14.0-macos-arm64.tar.xz",
+      "sha256": "b71e4b7c4b4be9953657877f7f9e6f7ee89114c716da7c070f4a238220e95d7e",
+      "bytes": 45902412,
+      "category": "toolchain",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/b71e4b7c4b4be9953657877f7f9e6f7ee89114c716da7c070f4a238220e95d7e"
+    },
+    "ghost-zig-0.14.0-win64.zip": {
+      "filename": "ghost-zig-0.14.0-win64.zip",
+      "sha256": "f53e5f9011ba20bbc3e0e6d0a9441b31eb227a97bac0e7d24172f1b8b27b4371",
+      "bytes": 82219809,
+      "category": "toolchain",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f53e5f9011ba20bbc3e0e6d0a9441b31eb227a97bac0e7d24172f1b8b27b4371"
+    },
+    "ghost_sectium_display-linux-arm64.so": {
+      "filename": "ghost_sectium_display-linux-arm64.so",
+      "sha256": "c36c57c28141438cd2e6b8133c2b56c80185e487662cad899e1d1be073497c08",
+      "bytes": 10696,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/c36c57c28141438cd2e6b8133c2b56c80185e487662cad899e1d1be073497c08"
+    },
+    "ghost_sectium_display-linux-x64.so": {
+      "filename": "ghost_sectium_display-linux-x64.so",
+      "sha256": "ac6c61bf7f3fc019de41ac8e797b142c22329f24c9ffc0d29987cce2c9e11d7f",
+      "bytes": 10664,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/ac6c61bf7f3fc019de41ac8e797b142c22329f24c9ffc0d29987cce2c9e11d7f"
+    },
+    "ghost_sectium_display-macos-arm64.dylib": {
+      "filename": "ghost_sectium_display-macos-arm64.dylib",
+      "sha256": "48b4c64e4e3c029dc543594e9347bfbd5dfd9f923682fd6462644fd7b2bce71c",
+      "bytes": 53656,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/48b4c64e4e3c029dc543594e9347bfbd5dfd9f923682fd6462644fd7b2bce71c"
+    },
+    "ghost_sectium_display.dll": {
+      "filename": "ghost_sectium_display.dll",
+      "sha256": "fd49e165293174e774f3bb936213c3d7ffda9eaeb7514f8c2d22360ecac4b854",
+      "bytes": 24064,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/fd49e165293174e774f3bb936213c3d7ffda9eaeb7514f8c2d22360ecac4b854"
+    },
+    "libbrotli-linux-arm64.so": {
+      "filename": "libbrotli-linux-arm64.so",
+      "sha256": "c2294baf6aba547372e4ceda76c688fc74fcf7040641579cb8e55cec90a5d815",
+      "bytes": 870176,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/c2294baf6aba547372e4ceda76c688fc74fcf7040641579cb8e55cec90a5d815"
+    },
+    "libbrotli-linux-x64.so": {
+      "filename": "libbrotli-linux-x64.so",
+      "sha256": "32f706660826092ea5a6af454660cdc7d096708e9cea3f224f1f67034ed6e750",
+      "bytes": 966448,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/32f706660826092ea5a6af454660cdc7d096708e9cea3f224f1f67034ed6e750"
+    },
+    "libbrotli-macos-arm64.dylib": {
+      "filename": "libbrotli-macos-arm64.dylib",
+      "sha256": "470c1426e775197b4bc95b85751a82fd196d5e436dd9b550fe0509cd48b664b2",
+      "bytes": 939864,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/470c1426e775197b4bc95b85751a82fd196d5e436dd9b550fe0509cd48b664b2"
+    },
+    "libbrotli-wasm32-wasi.wasm": {
+      "filename": "libbrotli-wasm32-wasi.wasm",
+      "sha256": "15f09b55143cf6c90e9b9af09f5465ff20b9597f08eae7fd8d1a50c5f0d29aa1",
+      "bytes": 1424071,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/15f09b55143cf6c90e9b9af09f5465ff20b9597f08eae7fd8d1a50c5f0d29aa1"
+    },
+    "libbrotli-win64.dll": {
+      "filename": "libbrotli-win64.dll",
+      "sha256": "9d6578ccaa0d97b540652a1f7b621bcbfcd5337b56e8a6c2cb1eba856c903238",
+      "bytes": 1001984,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/9d6578ccaa0d97b540652a1f7b621bcbfcd5337b56e8a6c2cb1eba856c903238"
+    },
+    "libexpat-linux-arm64.so": {
+      "filename": "libexpat-linux-arm64.so",
+      "sha256": "e20241bf5d7a8c3a858ba8826edb3f958574e702dd0644c64aca1f7791cb8381",
+      "bytes": 175232,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/e20241bf5d7a8c3a858ba8826edb3f958574e702dd0644c64aca1f7791cb8381"
+    },
+    "libexpat-linux-x64.so": {
+      "filename": "libexpat-linux-x64.so",
+      "sha256": "8a11758fd9ea9e851b7998a598566e367c847805f6dd163134ba602cb0b213ba",
+      "bytes": 203360,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8a11758fd9ea9e851b7998a598566e367c847805f6dd163134ba602cb0b213ba"
+    },
+    "libexpat-macos-arm64.dylib": {
+      "filename": "libexpat-macos-arm64.dylib",
+      "sha256": "16cec3b4ae96526e3fb7d4e38124e0b1836df17c914707f1ce462b283eddddee",
+      "bytes": 223096,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/16cec3b4ae96526e3fb7d4e38124e0b1836df17c914707f1ce462b283eddddee"
+    },
+    "libexpat-wasm32-wasi.wasm": {
+      "filename": "libexpat-wasm32-wasi.wasm",
+      "sha256": "0047254a972e0fd4a6563b849bfb2b0fc489b1ab0406e9a198d6a6add5fa1e1e",
+      "bytes": 1016867,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/0047254a972e0fd4a6563b849bfb2b0fc489b1ab0406e9a198d6a6add5fa1e1e"
+    },
+    "libexpat-win64.dll": {
+      "filename": "libexpat-win64.dll",
+      "sha256": "f553d8d1dcab427235c21955f33e4ad1b971211ab21de1377c48242026a3fb34",
+      "bytes": 200704,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f553d8d1dcab427235c21955f33e4ad1b971211ab21de1377c48242026a3fb34"
+    },
+    "libsectium_display-linux-arm64.so": {
+      "filename": "libsectium_display-linux-arm64.so",
+      "sha256": "c3c71874045b6a8babbcae78cc57b0f45b10a4b01d8f0f2dd7f5cc6a85d27f27",
+      "bytes": 20848,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/c3c71874045b6a8babbcae78cc57b0f45b10a4b01d8f0f2dd7f5cc6a85d27f27"
+    },
+    "libsectium_display-linux-x64.so": {
+      "filename": "libsectium_display-linux-x64.so",
+      "sha256": "79b3427b1634cb6cb72a0481baae4b900d0d5b3ccbc82caffb286796eb2c32a3",
+      "bytes": 22952,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/79b3427b1634cb6cb72a0481baae4b900d0d5b3ccbc82caffb286796eb2c32a3"
+    },
+    "libsectium_display-macos-arm64.dylib": {
+      "filename": "libsectium_display-macos-arm64.dylib",
+      "sha256": "8ed596430b5b2c67477abe5e55901ef1a54773b7180165a00564dc25c0dcdb1a",
+      "bytes": 51496,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8ed596430b5b2c67477abe5e55901ef1a54773b7180165a00564dc25c0dcdb1a"
+    },
+    "libsectium_display.dll": {
+      "filename": "libsectium_display.dll",
+      "sha256": "50badeec9a1882ea6997b327f207bc91366561c5e3bff56572cfb1e7fc85b923",
+      "bytes": 176640,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/50badeec9a1882ea6997b327f207bc91366561c5e3bff56572cfb1e7fc85b923"
+    },
+    "libsectium_display.pdb": {
+      "filename": "libsectium_display.pdb",
+      "sha256": "a6265010de2f5715c4f2fe066a7a398a9c93db3d3eb3537e8726945cc9ad5232",
+      "bytes": 983040,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/a6265010de2f5715c4f2fe066a7a398a9c93db3d3eb3537e8726945cc9ad5232"
+    },
+    "libsectium_display.wasm": {
+      "filename": "libsectium_display.wasm",
+      "sha256": "ae487c4671646a7b79b4365d222a2dda71177e3f668580a5f6c9d0476d5b6477",
+      "bytes": 16570,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/ae487c4671646a7b79b4365d222a2dda71177e3f668580a5f6c9d0476d5b6477"
+    },
+    "libsqlite3-linux-arm64.so": {
+      "filename": "libsqlite3-linux-arm64.so",
+      "sha256": "4c0742d16d85f6e296804c161dcac6d8ec9e60f6f73bff455a7d907068369263",
+      "bytes": 1361752,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4c0742d16d85f6e296804c161dcac6d8ec9e60f6f73bff455a7d907068369263"
+    },
+    "libsqlite3-linux-x64.so": {
+      "filename": "libsqlite3-linux-x64.so",
+      "sha256": "ca98fafd5b26079872c8e7aabeee1c4054add0322fac948c0d3801ece87d0d48",
+      "bytes": 1407552,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/ca98fafd5b26079872c8e7aabeee1c4054add0322fac948c0d3801ece87d0d48"
+    },
+    "libsqlite3-macos-arm64.dylib": {
+      "filename": "libsqlite3-macos-arm64.dylib",
+      "sha256": "e727134d10432d7e9db80616c90a71920b13477c4bb27b631b17f8d14ab20f30",
+      "bytes": 1589648,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/e727134d10432d7e9db80616c90a71920b13477c4bb27b631b17f8d14ab20f30"
+    },
+    "libsqlite3-wasm32-wasi.wasm": {
+      "filename": "libsqlite3-wasm32-wasi.wasm",
+      "sha256": "daf705cfb609beb7f2ccaed7b750cc4d9c01eb4efe90bc82d9fbe376f68a56ea",
+      "bytes": 4142578,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/daf705cfb609beb7f2ccaed7b750cc4d9c01eb4efe90bc82d9fbe376f68a56ea"
+    },
+    "libsqlite3-win64.dll": {
+      "filename": "libsqlite3-win64.dll",
+      "sha256": "ce67cda162f4ee8e7c89e01653bad3525bb9cab6a2b40191dbc39c6d1469bf8c",
+      "bytes": 1358336,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/ce67cda162f4ee8e7c89e01653bad3525bb9cab6a2b40191dbc39c6d1469bf8c"
+    },
+    "libwebp-linux-arm64.so": {
+      "filename": "libwebp-linux-arm64.so",
+      "sha256": "21565c15cd0464650f8b8d05ca728b730cfa3a7d9b8a9c565fbb4984b9e5f9dd",
+      "bytes": 505088,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/21565c15cd0464650f8b8d05ca728b730cfa3a7d9b8a9c565fbb4984b9e5f9dd"
+    },
+    "libwebp-linux-x64.so": {
+      "filename": "libwebp-linux-x64.so",
+      "sha256": "eb3fa15277abfe4d4201d83f57c0d2621226d58631fc9e59eba1b036678b996f",
+      "bytes": 631784,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/eb3fa15277abfe4d4201d83f57c0d2621226d58631fc9e59eba1b036678b996f"
+    },
+    "libwebp-macos-arm64.dylib": {
+      "filename": "libwebp-macos-arm64.dylib",
+      "sha256": "fcf6818f1d3854e0a4e4a366e96380d5de538ba81f397b5bd29cd8e48ddbc98a",
+      "bytes": 603448,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/fcf6818f1d3854e0a4e4a366e96380d5de538ba81f397b5bd29cd8e48ddbc98a"
+    },
+    "libwebp-wasm32-wasi.wasm": {
+      "filename": "libwebp-wasm32-wasi.wasm",
+      "sha256": "8ae767a8326aa0a7ffacdc6451a1d648801d1e969475ba5c9b4a023e12d14cf7",
+      "bytes": 1248440,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8ae767a8326aa0a7ffacdc6451a1d648801d1e969475ba5c9b4a023e12d14cf7"
+    },
+    "libwebp-win64.dll": {
+      "filename": "libwebp-win64.dll",
+      "sha256": "c705a004d40197f709fac60ca6a67832e2c13a8ade91c27d733409a6bfb59b6f",
+      "bytes": 607744,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/c705a004d40197f709fac60ca6a67832e2c13a8ade91c27d733409a6bfb59b6f"
+    },
+    "lumi-white-dragon-brand-pack.tar.gz": {
+      "filename": "lumi-white-dragon-brand-pack.tar.gz",
+      "sha256": "ddb0b97bc33569ec543db0bfceda9fec1b2904dc985291c4b54f86d5f33c0bf9",
+      "bytes": 168431,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/ddb0b97bc33569ec543db0bfceda9fec1b2904dc985291c4b54f86d5f33c0bf9"
+    },
+    "lumi-white-dragon.ico": {
+      "filename": "lumi-white-dragon.ico",
+      "sha256": "0ef951f1f9904563e5b7619336390cd163a8a7c6b4f103b35de3fe2de073d943",
+      "bytes": 90500,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/0ef951f1f9904563e5b7619336390cd163a8a7c6b4f103b35de3fe2de073d943"
+    },
+    "sectium-shell-win64.b8p": {
+      "filename": "sectium-shell-win64.b8p",
+      "sha256": "7c820b6b557a4366358a3bcdf4c8ec4873061ceb249780af81962744f8bb611f",
+      "bytes": 23913227,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/7c820b6b557a4366358a3bcdf4c8ec4873061ceb249780af81962744f8bb611f"
+    },
+    "v8-include-eaf3708a.tar.gz": {
+      "filename": "v8-include-eaf3708a.tar.gz",
+      "sha256": "5df70d97db94eb9163b8baa26fc35d53a355140405281f4bb9c82315c9adc1c1",
+      "bytes": 310489,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/5df70d97db94eb9163b8baa26fc35d53a355140405281f4bb9c82315c9adc1c1"
+    },
+    "v8-shared-linux-x64.tar.gz": {
+      "filename": "v8-shared-linux-x64.tar.gz",
+      "sha256": "39b0d6a4493285b6928b7f131d52adffd5973c32c0c57ff4d41d8dce4986dd95",
+      "bytes": 19728998,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/39b0d6a4493285b6928b7f131d52adffd5973c32c0c57ff4d41d8dce4986dd95"
+    },
+    "v8-shared-win64.b8p": {
+      "filename": "v8-shared-win64.b8p",
+      "sha256": "8027458c5b7f730e47bbfff581e6454f2c54e598be80fc51c171e5df20b5b554",
+      "bytes": 42821724,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8027458c5b7f730e47bbfff581e6454f2c54e598be80fc51c171e5df20b5b554"
+    },
+    "v8-shared-win64.zip": {
+      "filename": "v8-shared-win64.zip",
+      "sha256": "1be3760e89a4b04b03aadb8a5071febf1fdcebc80bbe97f4c519cae8118364cb",
+      "bytes": 25210844,
+      "category": "baseline",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/1be3760e89a4b04b03aadb8a5071febf1fdcebc80bbe97f4c519cae8118364cb"
+    }
+  }
+}
