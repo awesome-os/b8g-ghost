@@ -1,0 +1,143 @@
+name: Ingest Debloated Rolling-Latest Upstream Electron into Canonical Ghost CAS (cas-v1)
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      electron_tag:
+        description: 'Optional Electron tag (e.g. v35.0.0); blank = latest stable'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  ingest-electron:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install zstd and unzip
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq zstd unzip
+
+      - name: Download, Debloat & Upload Rolling-Latest Electron -> cas-v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_TAG: ${{ inputs.electron_tag }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/electron-in /tmp/electron-out
+
+          if [ -n "$INPUT_TAG" ]; then
+            TAG="$INPUT_TAG"
+          else
+            TAG=$(curl -fsSL -H "User-Agent: b8g-ghost" https://api.github.com/repos/electron/electron/releases/latest | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); console.log(d.tag_name)")
+          fi
+          echo ">>> Target upstream Electron release: $TAG"
+
+          # Map upstream Electron zip suffixes -> canonical Ghost CAS logical names
+          declare -A TARGETS=(
+            ["linux-x64"]="electron-linux-x64.tar.zst"
+            ["linux-arm64"]="electron-linux-arm64.tar.zst"
+            ["win32-x64"]="electron-win64.tar.zst"
+            ["darwin-arm64"]="electron-macos-arm64.tar.zst"
+          )
+
+          for upstream_target in "${!TARGETS[@]}"; do
+            logical="${TARGETS[$upstream_target]}"
+            zip_name="electron-${TAG}-${upstream_target}.zip"
+            url="https://github.com/electron/electron/releases/download/${TAG}/${zip_name}"
+            echo ">>> Fetching $url"
+            curl -fsSL "$url" -o "/tmp/electron-in/${zip_name}"
+            raw_bytes=$(stat -c%s "/tmp/electron-in/${zip_name}")
+
+            work="/tmp/electron-in/work-${upstream_target}"
+            rm -rf "$work" && mkdir -p "$work"
+            unzip -q "/tmp/electron-in/${zip_name}" -d "$work"
+
+            # Debloat: strip ~53 unused locale .pak files (keep en-US.pak) and ~15 MB LICENSES.chromium.html
+            rm -f "$work/LICENSES.chromium.html" "$work/LICENSE"
+            if [ -d "$work/locales" ]; then
+              find "$work/locales" -type f -name '*.pak' ! -name 'en-US.pak' -delete
+            fi
+            # macOS .app bundle locales cleanup
+            if [ -d "$work/Electron.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources" ]; then
+              find "$work/Electron.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources" -maxdepth 1 -type d -name '*.lproj' ! -name 'en.lproj' ! -name 'en_US.lproj' -exec rm -rf {} +
+            fi
+
+            out_archive="/tmp/electron-out/${logical}"
+            tar -C "$work" -cf - . | zstd -q -9 -T0 -o "$out_archive"
+            debloated_bytes=$(stat -c%s "$out_archive")
+            sha=$(sha256sum "$out_archive" | awk '{print $1}')
+            cp "$out_archive" "/tmp/electron-out/${sha}"
+            rm -rf "$work" "/tmp/electron-in/${zip_name}"
+
+            saved=$((raw_bytes - debloated_bytes))
+            echo "    $logical: $raw_bytes B (zip) -> $debloated_bytes B (debloated zst) | saved=$saved B | sha256=${sha:0:12}..."
+
+            node -e "
+              const fs = require('fs');
+              fs.writeFileSync('/tmp/electron-out/${logical}.meta.json', JSON.stringify({
+                filename: '${logical}',
+                sha256: '${sha}',
+                bytes: ${debloated_bytes},
+                raw_bytes: ${raw_bytes},
+                version: '${TAG}',
+                category: 'electron-upstream',
+                download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/${sha}'
+              }, null, 2));
+            "
+          done
+
+          # Upload SHA-256 blobs into canonical cas-v1
+          BLOBS=$(find /tmp/electron-out -maxdepth 1 -type f -regextype posix-extended -regex '.*/[a-f0-9]{64}')
+          gh release upload cas-v1 $BLOBS --repo awesome-os/b8g-ghost --clobber
+
+          # Merge into manifests/index.json with Keep-Last-5 history
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const idx = JSON.parse(fs.readFileSync('manifests/index.json', 'utf8'));
+            for (const f of fs.readdirSync('/tmp/electron-out').filter(x => x.endsWith('.meta.json')).sort()) {
+              const m = JSON.parse(fs.readFileSync(path.join('/tmp/electron-out', f), 'utf8'));
+              const prev = idx.entries[m.filename];
+              const history = Array.isArray(prev?.history) ? [...prev.history] : [];
+              if (prev && prev.sha256 && prev.sha256 !== m.sha256) {
+                history.unshift({
+                  sha256: prev.sha256,
+                  bytes: prev.bytes,
+                  version: prev.version || 'prev',
+                  retired_at: new Date().toISOString()
+                });
+              }
+              idx.entries[m.filename] = {
+                filename: m.filename,
+                sha256: m.sha256,
+                bytes: m.bytes,
+                raw_bytes: m.raw_bytes,
+                version: m.version,
+                category: m.category,
+                download_url: m.download_url,
+                ...(history.length > 0 ? { history: history.slice(0, 5) } : {})
+              };
+            }
+            const sorted = {};
+            for (const k of Object.keys(idx.entries).sort()) sorted[k] = idx.entries[k];
+            idx.entries = sorted;
+            idx.total_entries = Object.keys(sorted).length;
+            idx.updated_at = new Date().toISOString();
+            fs.writeFileSync('manifests/index.json', JSON.stringify(idx, null, 2) + '\n');
+            console.log('[electron-cas] Updated manifests/index.json -> total_entries=' + idx.total_entries);
+          "
+
+      - name: Commit Updated manifests/index.json to Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifests/index.json
+          git diff --cached --quiet || (git commit -m "feat(cas-v1): ingest debloated rolling-latest upstream Electron into canonical Ghost CAS" && git push origin main)
