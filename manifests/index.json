@@ -2,8 +2,8 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T05:29:41.814Z",
-  "total_entries": 147,
+  "updated_at": "2026-11-24T05:29:50.189Z",
+  "total_entries": 149,
   "entries": {
     "01-browser-split-shell.exe": {
       "filename": "01-browser-split-shell.exe",
@@ -1118,6 +1118,24 @@
       "bytes": 2187207,
       "category": "pypi-llm-stack",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8481e6f9aa578e88587280830a93aa72c34a3b082d334a7dbf17dbd473478505"
+    },
+    "qt6-base-linux-x64.tar.zst": {
+      "filename": "qt6-base-linux-x64.tar.zst",
+      "sha256": "69fe63969f37f9ee67ecc921a5de565eb3df33e1f10e8d53f1b4650902feb6ee",
+      "bytes": 32908479,
+      "raw_bytes": 149706700,
+      "version": "6.10.3",
+      "category": "qt6-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/69fe63969f37f9ee67ecc921a5de565eb3df33e1f10e8d53f1b4650902feb6ee"
+    },
+    "qt6-base-win64.tar.zst": {
+      "filename": "qt6-base-win64.tar.zst",
+      "sha256": "69ab0774b6a35ddcab47556d22c4faef6ce57a4b95f6f157ee4daef2daaf457b",
+      "bytes": 32159458,
+      "raw_bytes": 149543746,
+      "version": "6.10.3",
+      "category": "qt6-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/69ab0774b6a35ddcab47556d22c4faef6ce57a4b95f6f157ee4daef2daaf457b"
     },
     "safetensors-0.8.0.ghost.tar.gz": {
       "filename": "safetensors-0.8.0.ghost.tar.gz",
