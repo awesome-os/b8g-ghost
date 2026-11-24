@@ -3,7 +3,7 @@
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
   "updated_at": "2026-11-24T01:32:56.105Z",
-  "total_entries": 94,
+  "total_entries": 98,
   "entries": {
     "01-browser-split-shell.exe": {
       "filename": "01-browser-split-shell.exe",
@@ -662,6 +662,34 @@
       "bytes": 1764934,
       "category": "toolchain",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/0d02fd5d632ba5ca4ab1a82708a58cc9a24b7bf10aa177de4887bb494acca119"
+    },
+    "b8g-ghost-abi-linux-arm64.node": {
+      "filename": "b8g-ghost-abi-linux-arm64.node",
+      "sha256": "a82b3508e9b65722bf4f0aa8668814ec2a300762186d0103661b2152f538d3d6",
+      "bytes": 12728,
+      "category": "napi-addon",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/a82b3508e9b65722bf4f0aa8668814ec2a300762186d0103661b2152f538d3d6"
+    },
+    "b8g-ghost-abi-linux-x64.node": {
+      "filename": "b8g-ghost-abi-linux-x64.node",
+      "sha256": "affad09744171bf96be274e36c1936ce483ad16efcd11f647a6f0ddcb72e0758",
+      "bytes": 12616,
+      "category": "napi-addon",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/affad09744171bf96be274e36c1936ce483ad16efcd11f647a6f0ddcb72e0758"
+    },
+    "b8g-ghost-abi-macos-arm64.node": {
+      "filename": "b8g-ghost-abi-macos-arm64.node",
+      "sha256": "2b8e82b2b817a3815a78557ed9eef0d84ec2559e67ba70c89f3902635e0bc07e",
+      "bytes": 53984,
+      "category": "napi-addon",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/2b8e82b2b817a3815a78557ed9eef0d84ec2559e67ba70c89f3902635e0bc07e"
+    },
+    "b8g-ghost-abi-win64.node": {
+      "filename": "b8g-ghost-abi-win64.node",
+      "sha256": "8bab770bd29525ee40b190c1265614dee1d9d75ecd28475cc5f18558c24bb9b9",
+      "bytes": 27648,
+      "category": "napi-addon",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8bab770bd29525ee40b190c1265614dee1d9d75ecd28475cc5f18558c24bb9b9"
     }
   }
 }
