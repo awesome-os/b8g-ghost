@@ -1,0 +1,211 @@
+name: Ingest Debloated Node.js 26 (Stable, ABI 147) & 27 (Alpha/Current, ABI 153) into Canonical Ghost CAS (cas-v1)
+
+on:
+  schedule:
+    - cron: '15 6 * * *'
+  workflow_dispatch:
+    inputs:
+      node_line:
+        description: 'Release line to ingest: both (26 + 27), 27 (alpha/current, ABI 153), or 26 (stable, ABI 147)'
+        required: false
+        default: 'both'
+        type: choice
+        options:
+          - both
+          - '27'
+          - '26'
+      node_26_tag:
+        description: 'Optional explicit v26.x tag override (blank = latest v26.x)'
+        required: false
+        default: ''
+      node_27_tag:
+        description: 'Optional explicit v27.x tag override (blank = latest v27.x)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  ingest-node:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install zstd, unzip, xz-utils
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq zstd unzip xz-utils
+
+      - name: Download, Debloat & Upload Node 26 (ABI 147) & Node 27 (ABI 153) -> cas-v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+          NODE_LINE: ${{ inputs.node_line || 'both' }}
+          NODE_26_TAG: ${{ inputs.node_26_tag }}
+          NODE_27_TAG: ${{ inputs.node_27_tag }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/node-in /tmp/node-out
+
+          resolve_tag() {
+            local major="$1"
+            local override="$2"
+            if [ -n "$override" ]; then
+              echo "$override"
+              return
+            fi
+            curl -fsSL -H "User-Agent: b8g-ghost" -H "Authorization: Bearer $GITHUB_TOKEN" \
+              "https://api.github.com/repos/nodejs/node/releases?per_page=30" \
+              | node -e "
+                const d = JSON.parse(require('fs').readFileSync(0, 'utf8'));
+                const hit = d.find(r => r.tag_name.startsWith('v${major}.'));
+                if (!hit) { console.error('No release found for v${major}.x'); process.exit(1); }
+                console.log(hit.tag_name);
+              "
+          }
+
+          ingest_line() {
+            local major="$1"
+            local tag="$2"
+            local abi="$3"
+            local channel="$4"
+            local is_default="$5"
+
+            echo ">>> Ingesting Node.js v${major} line: ${tag} (abi=${abi}, channel=${channel})"
+
+            declare -A EXT=(
+              ["win-x64"]="zip"
+              ["linux-x64"]="tar.xz"
+              ["linux-arm64"]="tar.xz"
+              ["darwin-arm64"]="tar.xz"
+            )
+            declare -A OSKEY=(
+              ["win-x64"]="win64"
+              ["linux-x64"]="linux-x64"
+              ["linux-arm64"]="linux-arm64"
+              ["darwin-arm64"]="macos-arm64"
+            )
+
+            for target in win-x64 linux-x64 linux-arm64 darwin-arm64; do
+              local ext="${EXT[$target]}"
+              local oskey="${OSKEY[$target]}"
+              local logical="node-${major}-${oskey}.tar.zst"
+              local pkg="node-${tag}-${target}.${ext}"
+              local url="https://nodejs.org/dist/${tag}/${pkg}"
+
+              echo ">>> Fetching ${url}"
+              curl -fsSL "$url" -o "/tmp/node-in/${pkg}"
+              local raw_bytes
+              raw_bytes=$(stat -c%s "/tmp/node-in/${pkg}")
+
+              local work="/tmp/node-in/work-${major}-${target}"
+              rm -rf "$work" && mkdir -p "$work"
+              if [ "$ext" = "zip" ]; then
+                unzip -q "/tmp/node-in/${pkg}" -d "$work"
+              else
+                tar -xJf "/tmp/node-in/${pkg}" -C "$work"
+              fi
+
+              local inner="$work/node-${tag}-${target}"
+              # Debloat: strip docs, headers, corepack/npm bloat if only runtime is needed? Keep bin + lib (keep corepack/npm stripped? No, keep node binary + minimal runtime, strip share/doc, share/man, CHANGELOG, README, include)
+              rm -rf "$inner/share/doc" "$inner/share/man" "$inner/include" "$inner/CHANGELOG.md" "$inner/README.md"
+
+              local out_archive="/tmp/node-out/${logical}"
+              tar -C "$inner" -cf - . | zstd -q -9 -T0 -o "$out_archive"
+              local debloated_bytes
+              debloated_bytes=$(stat -c%s "$out_archive")
+              local sha
+              sha=$(sha256sum "$out_archive" | awk '{print $1}')
+              cp "$out_archive" "/tmp/node-out/${sha}"
+              rm -rf "$work" "/tmp/node-in/${pkg}"
+
+              echo "    ${logical}: ${raw_bytes} B -> ${debloated_bytes} B (zst -9) | abi=${abi} | sha256=${sha:0:12}..."
+
+              node -e "
+                const fs = require('fs');
+                const meta = {
+                  filename: '${logical}',
+                  sha256: '${sha}',
+                  bytes: ${debloated_bytes},
+                  raw_bytes: ${raw_bytes},
+                  version: '${tag}',
+                  major: ${major},
+                  abi: ${abi},
+                  channel: '${channel}',
+                  category: 'node-upstream',
+                  download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/${sha}'
+                };
+                fs.writeFileSync('/tmp/node-out/${logical}.meta.json', JSON.stringify(meta, null, 2));
+                if ('${is_default}' === 'true') {
+                  const rolling = 'node-${oskey}.tar.zst';
+                  fs.writeFileSync('/tmp/node-out/' + rolling + '.meta.json', JSON.stringify({ ...meta, filename: rolling }, null, 2));
+                }
+              "
+            done
+          }
+
+          if [ "$NODE_LINE" = "both" ] || [ "$NODE_LINE" = "26" ]; then
+            TAG26=$(resolve_tag 26 "$NODE_26_TAG")
+            ingest_line 26 "$TAG26" 147 "stable" "false"
+          fi
+
+          if [ "$NODE_LINE" = "both" ] || [ "$NODE_LINE" = "27" ]; then
+            TAG27=$(resolve_tag 27 "$NODE_27_TAG")
+            ingest_line 27 "$TAG27" 153 "alpha" "true"
+          fi
+
+          BLOBS=$(find /tmp/node-out -maxdepth 1 -type f -regextype posix-extended -regex '.*/[a-f0-9]{64}')
+          gh release upload cas-v1 $BLOBS --repo awesome-os/b8g-ghost --clobber
+
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const idx = JSON.parse(fs.readFileSync('manifests/index.json', 'utf8'));
+            for (const f of fs.readdirSync('/tmp/node-out').filter(x => x.endsWith('.meta.json')).sort()) {
+              const m = JSON.parse(fs.readFileSync(path.join('/tmp/node-out', f), 'utf8'));
+              const prev = idx.entries[m.filename];
+              const history = Array.isArray(prev?.history) ? [...prev.history] : [];
+              if (prev && prev.sha256 && prev.sha256 !== m.sha256) {
+                history.unshift({
+                  sha256: prev.sha256,
+                  bytes: prev.bytes,
+                  version: prev.version || 'prev',
+                  abi: prev.abi,
+                  retired_at: new Date().toISOString()
+                });
+              }
+              idx.entries[m.filename] = {
+                filename: m.filename,
+                sha256: m.sha256,
+                bytes: m.bytes,
+                raw_bytes: m.raw_bytes,
+                version: m.version,
+                major: m.major,
+                abi: m.abi,
+                channel: m.channel,
+                category: m.category,
+                download_url: m.download_url,
+                ...(history.length > 0 ? { history: history.slice(0, 5) } : {})
+              };
+            }
+            const sorted = {};
+            for (const k of Object.keys(idx.entries).sort()) sorted[k] = idx.entries[k];
+            idx.entries = sorted;
+            idx.total_entries = Object.keys(sorted).length;
+            idx.updated_at = new Date().toISOString();
+            fs.writeFileSync('manifests/index.json', JSON.stringify(idx, null, 2) + '\n');
+            console.log('[node-cas] Updated manifests/index.json -> total_entries=' + idx.total_entries);
+          "
+
+      - name: Commit Updated manifests/index.json to Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifests/index.json
+          if ! git diff --cached --quiet; then
+            git commit -m "feat(cas-v1): ingest Node.js 26 (ABI 147) & 27 (ABI 153) release lines"
+            git pull --rebase origin main
+            git push origin main
+          fi
