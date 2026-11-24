@@ -3,7 +3,7 @@
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
   "updated_at": "2026-11-24T01:32:56.105Z",
-  "total_entries": 93,
+  "total_entries": 94,
   "entries": {
     "01-browser-split-shell.exe": {
       "filename": "01-browser-split-shell.exe",
@@ -655,6 +655,13 @@
       "bytes": 107054,
       "category": "chromium-shard",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4e5454ca4168b5d0f2e4746f1ea9a419e21874a6015f5e3c1a7c28892f6dc5d1"
+    },
+    "typescript-6.0.3-programmable.tar.gz": {
+      "filename": "typescript-6.0.3-programmable.tar.gz",
+      "sha256": "0d02fd5d632ba5ca4ab1a82708a58cc9a24b7bf10aa177de4887bb494acca119",
+      "bytes": 1764934,
+      "category": "toolchain",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/0d02fd5d632ba5ca4ab1a82708a58cc9a24b7bf10aa177de4887bb494acca119"
     }
   }
 }
