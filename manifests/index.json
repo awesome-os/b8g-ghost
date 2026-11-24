@@ -2,7 +2,7 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T17:39:21.841Z",
+  "updated_at": "2026-11-24T19:00:24.060Z",
   "total_entries": 156,
   "entries": {
     "01-browser-split-shell.exe": {
@@ -239,12 +239,18 @@
     },
     "code-oss-app-linux-x64.tar.zst": {
       "filename": "code-oss-app-linux-x64.tar.zst",
-      "sha256": "f2f391384268e6736743495e38041f3e3517e667ee0b05e8e3d36c98708ae966",
-      "bytes": 205287699,
+      "sha256": "b60d898dc2dc78a207619358a66c943157e1b8a11ab90c05d34fd383bee4845a",
+      "bytes": 205285927,
       "version": "1.147.0",
       "category": "code-oss-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f2f391384268e6736743495e38041f3e3517e667ee0b05e8e3d36c98708ae966",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/b60d898dc2dc78a207619358a66c943157e1b8a11ab90c05d34fd383bee4845a",
       "history": [
+        {
+          "sha256": "f2f391384268e6736743495e38041f3e3517e667ee0b05e8e3d36c98708ae966",
+          "bytes": 205287699,
+          "version": "1.147.0",
+          "retired_at": "2026-11-24T19:00:23.828Z"
+        },
         {
           "sha256": "918b1dce71d7ec1e434bcf052a27051324bb64dd5eeed26e0c4f1ed45d0dc3cc",
           "bytes": 62326376,
@@ -255,12 +261,18 @@
     },
     "code-oss-app-win64.tar.zst": {
       "filename": "code-oss-app-win64.tar.zst",
-      "sha256": "453eda956e8e0477b6a6a7508007f14fe035d6d9e73231abeae75736831382c0",
-      "bytes": 194996453,
+      "sha256": "6c1e6d7eb40169279aea0cbf63ad89013e4e797b80f56c464555b39f59e3eb0b",
+      "bytes": 194987322,
       "version": "1.147.0",
       "category": "code-oss-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/453eda956e8e0477b6a6a7508007f14fe035d6d9e73231abeae75736831382c0",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/6c1e6d7eb40169279aea0cbf63ad89013e4e797b80f56c464555b39f59e3eb0b",
       "history": [
+        {
+          "sha256": "453eda956e8e0477b6a6a7508007f14fe035d6d9e73231abeae75736831382c0",
+          "bytes": 194996453,
+          "version": "1.147.0",
+          "retired_at": "2026-11-24T19:00:24.060Z"
+        },
         {
           "sha256": "cdb4c9743ac852246c771a672f59364946082c00f2aba39e3f2c107463e59384",
           "bytes": 61379829,
