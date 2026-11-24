@@ -2,7 +2,7 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T19:26:43.831Z",
+  "updated_at": "2026-11-24T19:51:20.835Z",
   "total_entries": 156,
   "entries": {
     "01-browser-split-shell.exe": {
@@ -161,21 +161,37 @@
     },
     "blender-linux-x64.tar.zst": {
       "filename": "blender-linux-x64.tar.zst",
-      "sha256": "092e8d08b534af1db18bdcb3190e7ea9c3b86f681a4c70a02fe297c08dec7a13",
-      "bytes": 447808801,
+      "sha256": "5d79da5634f6b0abc2b1094698e922020537328fa8ba195ec424ebd6256037a4",
+      "bytes": 447808803,
       "raw_bytes": 406944100,
       "version": "5.3.0",
       "category": "blender-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/092e8d08b534af1db18bdcb3190e7ea9c3b86f681a4c70a02fe297c08dec7a13"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/5d79da5634f6b0abc2b1094698e922020537328fa8ba195ec424ebd6256037a4",
+      "history": [
+        {
+          "sha256": "092e8d08b534af1db18bdcb3190e7ea9c3b86f681a4c70a02fe297c08dec7a13",
+          "bytes": 447808801,
+          "version": "5.3.0",
+          "retired_at": "2026-11-24T19:51:20.834Z"
+        }
+      ]
     },
     "blender-win64.tar.zst": {
       "filename": "blender-win64.tar.zst",
-      "sha256": "f5b4180f8c50ada84848e07c572eb6183f1b0043aa66d9a3d66856b3fb849e42",
-      "bytes": 352279253,
+      "sha256": "018b0f404e825b32e1f4ead89dc6aaa905c4ca682d239df735236a8afa5590ec",
+      "bytes": 352279256,
       "raw_bytes": 425299259,
       "version": "5.3.0",
       "category": "blender-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f5b4180f8c50ada84848e07c572eb6183f1b0043aa66d9a3d66856b3fb849e42"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/018b0f404e825b32e1f4ead89dc6aaa905c4ca682d239df735236a8afa5590ec",
+      "history": [
+        {
+          "sha256": "f5b4180f8c50ada84848e07c572eb6183f1b0043aa66d9a3d66856b3fb849e42",
+          "bytes": 352279253,
+          "version": "5.3.0",
+          "retired_at": "2026-11-24T19:51:20.835Z"
+        }
+      ]
     },
     "boringssl-include-289645a.tar.gz": {
       "filename": "boringssl-include-289645a.tar.gz",
