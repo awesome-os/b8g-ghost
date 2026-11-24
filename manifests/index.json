@@ -2,8 +2,8 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T02:42:19.120Z",
-  "total_entries": 123,
+  "updated_at": "2026-11-24T02:56:49.108Z",
+  "total_entries": 127,
   "entries": {
     "01-browser-split-shell.exe": {
       "filename": "01-browser-split-shell.exe",
@@ -207,6 +207,42 @@
       "bytes": 4666157,
       "category": "pypi-llm-stack",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/66b91d6771b4d873f64ad93250e4b82a2c2a517a6af480d1ea0796099c5009bc"
+    },
+    "electron-linux-arm64.tar.zst": {
+      "filename": "electron-linux-arm64.tar.zst",
+      "sha256": "8ba7b054be8cef2128e8f90af814ce7d2915699c80ff50a9e39b9b4f47357f83",
+      "bytes": 107588065,
+      "raw_bytes": 125066455,
+      "version": "v45.4.1",
+      "category": "electron-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8ba7b054be8cef2128e8f90af814ce7d2915699c80ff50a9e39b9b4f47357f83"
+    },
+    "electron-linux-x64.tar.zst": {
+      "filename": "electron-linux-x64.tar.zst",
+      "sha256": "2ad39d3f0202e1a23977a7f281a65be8d1ea9a720fbe0575409aa8c84f61957e",
+      "bytes": 106506966,
+      "raw_bytes": 123983877,
+      "version": "v45.4.1",
+      "category": "electron-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/2ad39d3f0202e1a23977a7f281a65be8d1ea9a720fbe0575409aa8c84f61957e"
+    },
+    "electron-macos-arm64.tar.zst": {
+      "filename": "electron-macos-arm64.tar.zst",
+      "sha256": "5123db5f1cc044882989aa796cb6599ef9fb32a8378670f6ed7e1b63bffee667",
+      "bytes": 103041304,
+      "raw_bytes": 121010879,
+      "version": "v45.4.1",
+      "category": "electron-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/5123db5f1cc044882989aa796cb6599ef9fb32a8378670f6ed7e1b63bffee667"
+    },
+    "electron-win64.tar.zst": {
+      "filename": "electron-win64.tar.zst",
+      "sha256": "74a96373cec4e79f1659879504c42cc0a82b754dba6aaeb264c454e3ce64ba77",
+      "bytes": 127887941,
+      "raw_bytes": 158296013,
+      "version": "v45.4.1",
+      "category": "electron-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/74a96373cec4e79f1659879504c42cc0a82b754dba6aaeb264c454e3ce64ba77"
     },
     "expat-include-0d6dacc.tar.gz": {
       "filename": "expat-include-0d6dacc.tar.gz",
