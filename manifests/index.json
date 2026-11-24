@@ -2,7 +2,7 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T20:58:38.806Z",
+  "updated_at": "2026-11-24T21:02:01.151Z",
   "total_entries": 156,
   "entries": {
     "01-browser-split-shell.exe": {
@@ -1351,21 +1351,37 @@
     },
     "pwsh-linux-x64.tar.zst": {
       "filename": "pwsh-linux-x64.tar.zst",
-      "sha256": "cb331255068d8d9285a62d4b3e4e06ff9220aebd3cb055d3ac3f8e3a6b7f9249",
-      "bytes": 70175621,
+      "sha256": "70c73999d6aa499596e6060933720a3ed497ed5c7a53d33a3d1cdbd77816dd7a",
+      "bytes": 70175623,
       "raw_bytes": 76881682,
       "version": "v7.7.0",
       "category": "powershell-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/cb331255068d8d9285a62d4b3e4e06ff9220aebd3cb055d3ac3f8e3a6b7f9249"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/70c73999d6aa499596e6060933720a3ed497ed5c7a53d33a3d1cdbd77816dd7a",
+      "history": [
+        {
+          "sha256": "cb331255068d8d9285a62d4b3e4e06ff9220aebd3cb055d3ac3f8e3a6b7f9249",
+          "bytes": 70175621,
+          "version": "v7.7.0",
+          "retired_at": "2026-11-24T21:02:01.150Z"
+        }
+      ]
     },
     "pwsh-win64.tar.zst": {
       "filename": "pwsh-win64.tar.zst",
-      "sha256": "b5a5d0e0727e39fdd7e41606495e54e473351c34177320a42667653a9c0fcef7",
-      "bytes": 101048487,
+      "sha256": "246006b1d628bddae197072caacfa77e84c430c957ea8a46933c029fe29704e0",
+      "bytes": 101048483,
       "raw_bytes": 115330228,
       "version": "v7.7.0",
       "category": "powershell-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/b5a5d0e0727e39fdd7e41606495e54e473351c34177320a42667653a9c0fcef7"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/246006b1d628bddae197072caacfa77e84c430c957ea8a46933c029fe29704e0",
+      "history": [
+        {
+          "sha256": "b5a5d0e0727e39fdd7e41606495e54e473351c34177320a42667653a9c0fcef7",
+          "bytes": 101048487,
+          "version": "v7.7.0",
+          "retired_at": "2026-11-24T21:02:01.150Z"
+        }
+      ]
     },
     "pydantic-core-2.50.5.ghost.tar.gz": {
       "filename": "pydantic-core-2.50.5.ghost.tar.gz",
