@@ -178,6 +178,9 @@ jobs:
           "
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git pull --rebase origin main
           git add manifests/index.json
-          git diff --cached --quiet || (git commit -m "feat(cas-v1): publish Awesome-OS Code - OSS ${{ needs.resolve-version.outputs.tag }} (built from microsoft/vscode MIT)" && git push origin main)
+          if ! git diff --cached --quiet; then
+            git commit -m "feat(cas-v1): publish Awesome-OS Code - OSS ${{ needs.resolve-version.outputs.tag }} (built from microsoft/vscode MIT)"
+            git pull --rebase origin main
+            git push origin main
+          fi
