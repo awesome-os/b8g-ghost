@@ -22,11 +22,12 @@ jobs:
       - id: ver
         env:
           INPUT_TAG: ${{ inputs.vscode_tag }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           if [ -n "$INPUT_TAG" ]; then
             TAG="$INPUT_TAG"
           else
-            TAG=$(curl -fsSL -H "User-Agent: b8g-ghost" https://api.github.com/repos/microsoft/vscode/releases/latest | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); console.log(d.tag_name)")
+            TAG=$(curl -fsSL -H "User-Agent: b8g-ghost" -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/repos/microsoft/vscode/releases/latest | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); console.log(d.tag_name)")
           fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo ">>> Target microsoft/vscode MIT release: $TAG"
@@ -61,6 +62,18 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get update -qq && sudo apt-get install -y -qq libx11-dev libxkbfile-dev libsecret-1-dev libkrb5-dev zstd
 
+      - name: Add Windows SDK signtool.exe to PATH
+        if: matrix.os == 'windows-latest'
+        shell: bash
+        run: |
+          SIGNTOOL_DIR=$(ls -d "/c/Program Files (x86)/Windows Kits/10/bin/"*/x64 2>/dev/null | sort -V | tail -n 1)
+          if [ -n "$SIGNTOOL_DIR" ] && [ -f "$SIGNTOOL_DIR/signtool.exe" ]; then
+            echo "$SIGNTOOL_DIR" >> "$GITHUB_PATH"
+            echo "Added signtool.exe dir to PATH: $SIGNTOOL_DIR"
+          else
+            echo "WARNING: signtool.exe not found in Windows Kits"
+          fi
+
       - name: Patch product.json -> Awesome-OS Code - OSS (Open VSX, zero telemetry)
         shell: bash
         run: |
@@ -90,6 +103,8 @@ jobs:
         env:
           NODE_OPTIONS: '--max-old-space-size=8192'
           VSCODE_SKIP_NODE_VERSION_CHECK: '1'
+          GITHUB_TOKEN: ${{ github.token }}
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
         run: |
           if [ -f pnpm-lock.yaml ]; then
             corepack enable || npm install -g pnpm
