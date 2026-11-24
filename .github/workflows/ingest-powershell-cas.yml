@@ -1,0 +1,213 @@
+name: Ingest Debloated Rolling-Latest Upstream PowerShell into Canonical Ghost CAS (cas-v1)
+
+on:
+  schedule:
+    - cron: '0 11 * * *'
+  workflow_dispatch:
+    inputs:
+      pwsh_version:
+        description: 'Optional explicit PowerShell release tag override e.g. v7.5.0 (blank = latest)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  ingest-powershell:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install zstd and unzip
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq zstd unzip
+
+      - name: Download, Debloat & Upload Rolling-Latest PowerShell -> cas-v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_VERSION: ${{ inputs.pwsh_version }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/pwsh-in /tmp/pwsh-out
+
+          node -e '
+            const fs = require("fs");
+            const inputVer = (process.env.INPUT_VERSION || "").trim();
+            const apiUrl = inputVer
+              ? `https://api.github.com/repos/PowerShell/PowerShell/releases/tags/${encodeURIComponent(inputVer)}`
+              : "https://api.github.com/repos/PowerShell/PowerShell/releases/latest";
+
+            const headers = {
+              "User-Agent": "b8g-ghost",
+              "Accept": "application/vnd.github+json"
+            };
+            if (process.env.GH_TOKEN) {
+              headers["Authorization"] = `Bearer ${process.env.GH_TOKEN}`;
+            }
+
+            (async () => {
+              const res = await fetch(apiUrl, { headers });
+              if (!res.ok) throw new Error(`HTTP ${res.status} for ${apiUrl}`);
+              const rel = await res.json();
+              const tag = (rel.tag_name || "").trim();
+              if (!tag) throw new Error("Missing tag_name in PowerShell release response");
+
+              const assets = rel.assets || [];
+              const winAsset = assets.find((a) => {
+                const n = a.name || "";
+                return /^PowerShell-.*-win-x64\.zip$/i.test(n) && !/fxdependent/i.test(n);
+              });
+              const linuxAsset = assets.find((a) => {
+                const n = a.name || "";
+                return /^PowerShell-.*-linux-x64\.tar\.gz$/i.test(n) && !/fxdependent|musl|alpine/i.test(n);
+              });
+
+              if (!winAsset || !winAsset.browser_download_url) {
+                throw new Error(`No PowerShell-*-win-x64.zip asset found in PowerShell release ${tag}`);
+              }
+              if (!linuxAsset || !linuxAsset.browser_download_url) {
+                throw new Error(`No PowerShell-*-linux-x64.tar.gz asset found in PowerShell release ${tag}`);
+              }
+
+              const picked = {
+                version: tag,
+                targets: [
+                  {
+                    logical: "pwsh-win64.tar.zst",
+                    kind: "zip",
+                    name: winAsset.name,
+                    url: winAsset.browser_download_url
+                  },
+                  {
+                    logical: "pwsh-linux-x64.tar.zst",
+                    kind: "targz",
+                    name: linuxAsset.name,
+                    url: linuxAsset.browser_download_url
+                  }
+                ]
+              };
+              fs.writeFileSync("/tmp/pwsh-in/resolved.json", JSON.stringify(picked, null, 2));
+              console.log(">>> Resolved PowerShell release:", picked.version);
+              for (const t of picked.targets) {
+                console.log(`    ${t.logical}: ${t.name} -> ${t.url}`);
+              }
+            })().catch((err) => { console.error(err); process.exit(1); });
+          '
+
+          VER=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/pwsh-in/resolved.json','utf8')).version)")
+
+          for idx in 0 1; do
+            LOGICAL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/pwsh-in/resolved.json','utf8')).targets[$idx].logical)")
+            KIND=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/pwsh-in/resolved.json','utf8')).targets[$idx].kind)")
+            ASSET_NAME=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/pwsh-in/resolved.json','utf8')).targets[$idx].name)")
+            ASSET_URL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/pwsh-in/resolved.json','utf8')).targets[$idx].url)")
+
+            echo ">>> Fetching $ASSET_URL"
+            curl -fsSL "$ASSET_URL" -o "/tmp/pwsh-in/${ASSET_NAME}"
+            RAW_BYTES=$(stat -c%s "/tmp/pwsh-in/${ASSET_NAME}")
+
+            WORK="/tmp/pwsh-in/work-${idx}"
+            rm -rf "$WORK" && mkdir -p "$WORK"
+            if [ "$KIND" = "zip" ]; then
+              unzip -q "/tmp/pwsh-in/${ASSET_NAME}" -d "$WORK"
+            else
+              tar -xzf "/tmp/pwsh-in/${ASSET_NAME}" -C "$WORK"
+            fi
+
+            # Strip *.pdb debug symbols
+            find "$WORK" -type f -iname '*.pdb' -delete || true
+
+            OUT_ARCHIVE="/tmp/pwsh-out/${LOGICAL}"
+            tar -C "$WORK" -cf - . | zstd -q -9 -T0 -o "$OUT_ARCHIVE"
+            DEBLOATED_BYTES=$(stat -c%s "$OUT_ARCHIVE")
+            SHA=$(sha256sum "$OUT_ARCHIVE" | awk '{print $1}')
+            cp "$OUT_ARCHIVE" "/tmp/pwsh-out/${SHA}"
+            rm -rf "$WORK" "/tmp/pwsh-in/${ASSET_NAME}"
+
+            SAVED=$((RAW_BYTES - DEBLOATED_BYTES))
+            echo "    $LOGICAL: $RAW_BYTES B (upstream) -> $DEBLOATED_BYTES B (debloated zst) | saved=$SAVED B | sha256=${SHA:0:12}..."
+
+            node -e "
+              const fs = require('fs');
+              fs.writeFileSync('/tmp/pwsh-out/${LOGICAL}.meta.json', JSON.stringify({
+                filename: '${LOGICAL}',
+                sha256: '${SHA}',
+                bytes: ${DEBLOATED_BYTES},
+                raw_bytes: ${RAW_BYTES},
+                version: '${VER}',
+                category: 'powershell-upstream',
+                download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/${SHA}'
+              }, null, 2));
+            "
+          done
+
+          BLOBS=$(find /tmp/pwsh-out -maxdepth 1 -type f -regextype posix-extended -regex '.*/[a-f0-9]{64}')
+          gh release upload cas-v1 $BLOBS --repo awesome-os/b8g-ghost --clobber
+
+      - name: Commit Updated manifests/index.json to Git
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          merge_manifest() {
+            node -e "
+              const fs = require('fs');
+              const path = require('path');
+              const idx = JSON.parse(fs.readFileSync('manifests/index.json', 'utf8'));
+              for (const f of fs.readdirSync('/tmp/pwsh-out').filter(x => x.endsWith('.meta.json')).sort()) {
+                const m = JSON.parse(fs.readFileSync(path.join('/tmp/pwsh-out', f), 'utf8'));
+                const prev = idx.entries[m.filename];
+                const history = Array.isArray(prev?.history) ? [...prev.history] : [];
+                if (prev && prev.sha256 && prev.sha256 !== m.sha256) {
+                  history.unshift({
+                    sha256: prev.sha256,
+                    bytes: prev.bytes,
+                    version: prev.version || 'prev',
+                    retired_at: new Date().toISOString()
+                  });
+                }
+                idx.entries[m.filename] = {
+                  filename: m.filename,
+                  sha256: m.sha256,
+                  bytes: m.bytes,
+                  raw_bytes: m.raw_bytes,
+                  version: m.version,
+                  category: m.category,
+                  download_url: m.download_url,
+                  ...(history.length > 0 ? { history: history.slice(0, 5) } : {})
+                };
+              }
+              const sorted = {};
+              for (const k of Object.keys(idx.entries).sort()) sorted[k] = idx.entries[k];
+              idx.entries = sorted;
+              idx.total_entries = Object.keys(sorted).length;
+              idx.updated_at = new Date().toISOString();
+              fs.writeFileSync('manifests/index.json', JSON.stringify(idx, null, 2) + '\n');
+              console.log('[pwsh-cas] Updated manifests/index.json -> total_entries=' + idx.total_entries);
+            "
+          }
+
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            merge_manifest
+            git add manifests/index.json
+            if git diff --cached --quiet; then
+              echo "[pwsh-cas] No manifest changes to commit."
+              exit 0
+            fi
+            git commit -m "feat(cas-v1): roll debloated PowerShell into canonical Ghost CAS"
+            if git pull --rebase origin main && git push origin main; then
+              exit 0
+            fi
+            git rebase --abort || true
+            echo "[pwsh-cas] Push/rebase conflict on attempt $attempt, retrying..."
+            sleep 3
+          done
+          echo "ERROR: Failed to push manifests/index.json after 5 attempts"
+          exit 1

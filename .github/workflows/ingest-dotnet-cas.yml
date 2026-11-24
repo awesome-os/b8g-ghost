@@ -1,0 +1,236 @@
+name: Ingest Debloated Rolling-Latest Upstream .NET SDK into Canonical Ghost CAS (cas-v1)
+
+on:
+  schedule:
+    - cron: '0 11 * * 2'
+  workflow_dispatch:
+    inputs:
+      dotnet_channel:
+        description: 'Optional explicit .NET channel override e.g. 9.0 (blank = newest supported)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  ingest-dotnet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install zstd and unzip
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq zstd unzip
+
+      - name: Download, Debloat & Upload Rolling-Latest .NET SDK -> cas-v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_CHANNEL: ${{ inputs.dotnet_channel }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/dotnet-in /tmp/dotnet-out
+
+          node -e '
+            const fs = require("fs");
+            const inputChannel = (process.env.INPUT_CHANNEL || "").trim();
+            const indexUrl = "https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/releases-index.json";
+
+            (async () => {
+              const res = await fetch(indexUrl, { headers: { "User-Agent": "b8g-ghost" } });
+              if (!res.ok) throw new Error(`HTTP ${res.status} for ${indexUrl}`);
+              const indexData = await res.json();
+              const channels = indexData["releases-index"] || [];
+              if (channels.length === 0) throw new Error("Empty releases-index from Microsoft metadata");
+
+              const parseVer = (v) => {
+                const parts = String(v || "0.0").split(".").map((x) => Number(x) || 0);
+                return (parts[0] || 0) * 1000 + (parts[1] || 0);
+              };
+
+              let channel;
+              if (inputChannel) {
+                channel = channels.find((c) => String(c["channel-version"]) === inputChannel);
+                if (!channel) throw new Error(`Requested .NET channel ${inputChannel} not found`);
+              } else {
+                const supported = channels
+                  .filter((c) => ["active", "maintenance"].includes(String(c["support-phase"] || "").toLowerCase()))
+                  .sort((a, b) => parseVer(b["channel-version"]) - parseVer(a["channel-version"]));
+                channel = supported[0] || channels[0];
+              }
+
+              const relUrl = channel["releases.json"];
+              if (!relUrl) throw new Error(`Missing releases.json URL for channel ${channel["channel-version"]}`);
+
+              const relRes = await fetch(relUrl, { headers: { "User-Agent": "b8g-ghost" } });
+              if (!relRes.ok) throw new Error(`HTTP ${relRes.status} for ${relUrl}`);
+              const relData = await relRes.json();
+              const releases = relData.releases || [];
+
+              let pickedSdk = null;
+              for (const r of releases) {
+                const candidates = [];
+                if (r.sdk && Array.isArray(r.sdk.files)) candidates.push(r.sdk);
+                if (Array.isArray(r.sdks)) {
+                  for (const s of r.sdks) {
+                    if (s && Array.isArray(s.files)) candidates.push(s);
+                  }
+                }
+                for (const sdk of candidates) {
+                  const winFile = sdk.files.find((f) => f.rid === "win-x64" && /\.zip$/i.test(f.name || ""));
+                  const linuxFile = sdk.files.find((f) => f.rid === "linux-x64" && /\.tar\.gz$/i.test(f.name || ""));
+                  if (winFile && winFile.url && linuxFile && linuxFile.url) {
+                    pickedSdk = { version: sdk.version, winFile, linuxFile };
+                    break;
+                  }
+                }
+                if (pickedSdk) break;
+              }
+
+              if (!pickedSdk) {
+                throw new Error(`No SDK with win-x64.zip and linux-x64.tar.gz found in channel ${channel["channel-version"]}`);
+              }
+
+              const picked = {
+                channel: channel["channel-version"],
+                support_phase: channel["support-phase"],
+                version: pickedSdk.version,
+                targets: [
+                  {
+                    logical: "dotnet-sdk-win64.tar.zst",
+                    kind: "zip",
+                    name: pickedSdk.winFile.name,
+                    url: pickedSdk.winFile.url
+                  },
+                  {
+                    logical: "dotnet-sdk-linux-x64.tar.zst",
+                    kind: "targz",
+                    name: pickedSdk.linuxFile.name,
+                    url: pickedSdk.linuxFile.url
+                  }
+                ]
+              };
+              fs.writeFileSync("/tmp/dotnet-in/resolved.json", JSON.stringify(picked, null, 2));
+              console.log(`>>> Resolved .NET SDK channel=${picked.channel} (${picked.support_phase}) version=${picked.version}`);
+              for (const t of picked.targets) {
+                console.log(`    ${t.logical}: ${t.name} -> ${t.url}`);
+              }
+            })().catch((err) => { console.error(err); process.exit(1); });
+          '
+
+          VER=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/dotnet-in/resolved.json','utf8')).version)")
+
+          for idx in 0 1; do
+            LOGICAL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/dotnet-in/resolved.json','utf8')).targets[$idx].logical)")
+            KIND=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/dotnet-in/resolved.json','utf8')).targets[$idx].kind)")
+            ASSET_NAME=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/dotnet-in/resolved.json','utf8')).targets[$idx].name)")
+            ASSET_URL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/dotnet-in/resolved.json','utf8')).targets[$idx].url)")
+
+            echo ">>> Fetching $ASSET_URL"
+            curl -fsSL "$ASSET_URL" -o "/tmp/dotnet-in/${ASSET_NAME}"
+            RAW_BYTES=$(stat -c%s "/tmp/dotnet-in/${ASSET_NAME}")
+
+            WORK="/tmp/dotnet-in/work-${idx}"
+            rm -rf "$WORK" && mkdir -p "$WORK"
+            if [ "$KIND" = "zip" ]; then
+              unzip -q "/tmp/dotnet-in/${ASSET_NAME}" -d "$WORK"
+            else
+              tar -xzf "/tmp/dotnet-in/${ASSET_NAME}" -C "$WORK"
+            fi
+
+            # Strip *.pdb debug symbols
+            find "$WORK" -type f -iname '*.pdb' -delete || true
+
+            OUT_ARCHIVE="/tmp/dotnet-out/${LOGICAL}"
+            tar -C "$WORK" -cf - . | zstd -q -9 -T0 -o "$OUT_ARCHIVE"
+            DEBLOATED_BYTES=$(stat -c%s "$OUT_ARCHIVE")
+            SHA=$(sha256sum "$OUT_ARCHIVE" | awk '{print $1}')
+            cp "$OUT_ARCHIVE" "/tmp/dotnet-out/${SHA}"
+            rm -rf "$WORK" "/tmp/dotnet-in/${ASSET_NAME}"
+
+            SAVED=$((RAW_BYTES - DEBLOATED_BYTES))
+            echo "    $LOGICAL: $RAW_BYTES B (upstream) -> $DEBLOATED_BYTES B (debloated zst) | saved=$SAVED B | sha256=${SHA:0:12}..."
+
+            node -e "
+              const fs = require('fs');
+              fs.writeFileSync('/tmp/dotnet-out/${LOGICAL}.meta.json', JSON.stringify({
+                filename: '${LOGICAL}',
+                sha256: '${SHA}',
+                bytes: ${DEBLOATED_BYTES},
+                raw_bytes: ${RAW_BYTES},
+                version: '${VER}',
+                category: 'dotnet-upstream',
+                download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/${SHA}'
+              }, null, 2));
+            "
+          done
+
+          BLOBS=$(find /tmp/dotnet-out -maxdepth 1 -type f -regextype posix-extended -regex '.*/[a-f0-9]{64}')
+          gh release upload cas-v1 $BLOBS --repo awesome-os/b8g-ghost --clobber
+
+      - name: Commit Updated manifests/index.json to Git
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          merge_manifest() {
+            node -e "
+              const fs = require('fs');
+              const path = require('path');
+              const idx = JSON.parse(fs.readFileSync('manifests/index.json', 'utf8'));
+              for (const f of fs.readdirSync('/tmp/dotnet-out').filter(x => x.endsWith('.meta.json')).sort()) {
+                const m = JSON.parse(fs.readFileSync(path.join('/tmp/dotnet-out', f), 'utf8'));
+                const prev = idx.entries[m.filename];
+                const history = Array.isArray(prev?.history) ? [...prev.history] : [];
+                if (prev && prev.sha256 && prev.sha256 !== m.sha256) {
+                  history.unshift({
+                    sha256: prev.sha256,
+                    bytes: prev.bytes,
+                    version: prev.version || 'prev',
+                    retired_at: new Date().toISOString()
+                  });
+                }
+                idx.entries[m.filename] = {
+                  filename: m.filename,
+                  sha256: m.sha256,
+                  bytes: m.bytes,
+                  raw_bytes: m.raw_bytes,
+                  version: m.version,
+                  category: m.category,
+                  download_url: m.download_url,
+                  ...(history.length > 0 ? { history: history.slice(0, 5) } : {})
+                };
+              }
+              const sorted = {};
+              for (const k of Object.keys(idx.entries).sort()) sorted[k] = idx.entries[k];
+              idx.entries = sorted;
+              idx.total_entries = Object.keys(sorted).length;
+              idx.updated_at = new Date().toISOString();
+              fs.writeFileSync('manifests/index.json', JSON.stringify(idx, null, 2) + '\n');
+              console.log('[dotnet-cas] Updated manifests/index.json -> total_entries=' + idx.total_entries);
+            "
+          }
+
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            merge_manifest
+            git add manifests/index.json
+            if git diff --cached --quiet; then
+              echo "[dotnet-cas] No manifest changes to commit."
+              exit 0
+            fi
+            git commit -m "feat(cas-v1): roll debloated .NET SDK into canonical Ghost CAS"
+            if git pull --rebase origin main && git push origin main; then
+              exit 0
+            fi
+            git rebase --abort || true
+            echo "[dotnet-cas] Push/rebase conflict on attempt $attempt, retrying..."
+            sleep 3
+          done
+          echo "ERROR: Failed to push manifests/index.json after 5 attempts"
+          exit 1
