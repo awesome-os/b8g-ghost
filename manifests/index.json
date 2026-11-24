@@ -2,7 +2,7 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T19:00:24.060Z",
+  "updated_at": "2026-11-24T19:26:43.831Z",
   "total_entries": 156,
   "entries": {
     "01-browser-split-shell.exe": {
@@ -193,21 +193,37 @@
     },
     "brave-linux-x64.tar.zst": {
       "filename": "brave-linux-x64.tar.zst",
-      "sha256": "4ab6815a6edf414f9b4d7c332c4012c28c2af66afd30dd37f4263e6af87d8b99",
-      "bytes": 178720572,
-      "raw_bytes": 223449430,
-      "version": "v1.102.32",
+      "sha256": "5d0a40bc1fe12fefabe9788a5745bc6073dce4eff0d182658831f1322ffb38e5",
+      "bytes": 178738289,
+      "raw_bytes": 223453630,
+      "version": "v1.102.34",
       "category": "brave-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4ab6815a6edf414f9b4d7c332c4012c28c2af66afd30dd37f4263e6af87d8b99"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/5d0a40bc1fe12fefabe9788a5745bc6073dce4eff0d182658831f1322ffb38e5",
+      "history": [
+        {
+          "sha256": "4ab6815a6edf414f9b4d7c332c4012c28c2af66afd30dd37f4263e6af87d8b99",
+          "bytes": 178720572,
+          "version": "v1.102.32",
+          "retired_at": "2026-11-24T19:26:43.831Z"
+        }
+      ]
     },
     "brave-win64.tar.zst": {
       "filename": "brave-win64.tar.zst",
-      "sha256": "1bc5001cfd9ce8c49c7bf0c3c2d581a05abfc13c081c1ac3cb6f5865f3b23251",
-      "bytes": 216609200,
-      "raw_bytes": 264117728,
-      "version": "v1.102.32",
+      "sha256": "79bc7ed5b43cd496647526a5085ddff70e938d4deec3e0186e91c62146c23f8c",
+      "bytes": 215726590,
+      "raw_bytes": 264135695,
+      "version": "v1.102.34",
       "category": "brave-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/1bc5001cfd9ce8c49c7bf0c3c2d581a05abfc13c081c1ac3cb6f5865f3b23251"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/79bc7ed5b43cd496647526a5085ddff70e938d4deec3e0186e91c62146c23f8c",
+      "history": [
+        {
+          "sha256": "1bc5001cfd9ce8c49c7bf0c3c2d581a05abfc13c081c1ac3cb6f5865f3b23251",
+          "bytes": 216609200,
+          "version": "v1.102.32",
+          "retired_at": "2026-11-24T19:26:43.831Z"
+        }
+      ]
     },
     "brotli-include-fed075f.tar.gz": {
       "filename": "brotli-include-fed075f.tar.gz",
