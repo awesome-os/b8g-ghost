@@ -2,7 +2,7 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T04:27:01.105Z",
+  "updated_at": "2026-11-24T04:34:31.013Z",
   "total_entries": 143,
   "entries": {
     "01-browser-split-shell.exe": {
@@ -1044,11 +1044,19 @@
     },
     "sectium-browser-app.tar.zst": {
       "filename": "sectium-browser-app.tar.zst",
-      "sha256": "966bb2167ce847cdd7946cbba8bb4233b31bdba804f43dd1d2ea85928e372d2f",
-      "bytes": 9315,
-      "version": "0.7.0",
+      "sha256": "991fa36667de4b32739062a44e637905525dfe9e897436499d0822cce9de1ec5",
+      "bytes": 9730,
+      "version": "0.7.1",
       "category": "sectium-browser",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/966bb2167ce847cdd7946cbba8bb4233b31bdba804f43dd1d2ea85928e372d2f"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/991fa36667de4b32739062a44e637905525dfe9e897436499d0822cce9de1ec5",
+      "history": [
+        {
+          "sha256": "966bb2167ce847cdd7946cbba8bb4233b31bdba804f43dd1d2ea85928e372d2f",
+          "bytes": 9315,
+          "version": "0.7.0",
+          "retired_at": "2026-11-24T04:34:31.013Z"
+        }
+      ]
     },
     "sectium-browser.exe": {
       "filename": "sectium-browser.exe",
