@@ -2,7 +2,7 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T17:27:09.608Z",
+  "updated_at": "2026-11-24T17:39:21.841Z",
   "total_entries": 156,
   "entries": {
     "01-browser-split-shell.exe": {
@@ -1009,147 +1009,255 @@
     },
     "node-26-linux-arm64.tar.zst": {
       "filename": "node-26-linux-arm64.tar.zst",
-      "sha256": "af0ee930eb7f66ad07f32f53fb8b5d3d0d4c4511769e568e12d4c78aa9dfedd8",
-      "bytes": 42917071,
+      "sha256": "87995c047f422949f4fbd4c17b4923c3d81ce4a77c322bbc9f53617d14345b25",
+      "bytes": 42917074,
       "raw_bytes": 33053848,
       "version": "v26.13.1",
       "major": 26,
       "abi": 147,
       "channel": "stable",
       "category": "node-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/af0ee930eb7f66ad07f32f53fb8b5d3d0d4c4511769e568e12d4c78aa9dfedd8"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/87995c047f422949f4fbd4c17b4923c3d81ce4a77c322bbc9f53617d14345b25",
+      "history": [
+        {
+          "sha256": "af0ee930eb7f66ad07f32f53fb8b5d3d0d4c4511769e568e12d4c78aa9dfedd8",
+          "bytes": 42917071,
+          "version": "v26.13.1",
+          "abi": 147,
+          "retired_at": "2026-11-24T17:39:21.840Z"
+        }
+      ]
     },
     "node-26-linux-x64.tar.zst": {
       "filename": "node-26-linux-x64.tar.zst",
-      "sha256": "409d3d71fa48c9fe415b2c5af9e3c1ab3378e377f544588a2ce36d7b76d8ea08",
-      "bytes": 42649324,
+      "sha256": "776cd1f440ae82011b13b580691c0ea228e78eab4fe2d88f72697a8b7f512288",
+      "bytes": 42649325,
       "raw_bytes": 34093052,
       "version": "v26.13.1",
       "major": 26,
       "abi": 147,
       "channel": "stable",
       "category": "node-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/409d3d71fa48c9fe415b2c5af9e3c1ab3378e377f544588a2ce36d7b76d8ea08"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/776cd1f440ae82011b13b580691c0ea228e78eab4fe2d88f72697a8b7f512288",
+      "history": [
+        {
+          "sha256": "409d3d71fa48c9fe415b2c5af9e3c1ab3378e377f544588a2ce36d7b76d8ea08",
+          "bytes": 42649324,
+          "version": "v26.13.1",
+          "abi": 147,
+          "retired_at": "2026-11-24T17:39:21.840Z"
+        }
+      ]
     },
     "node-26-macos-arm64.tar.zst": {
       "filename": "node-26-macos-arm64.tar.zst",
-      "sha256": "86a0f4c82745a039a2496e4d7b4fdb861516cce7c3906a7feeda3ba548648e89",
-      "bytes": 39106845,
+      "sha256": "f937a862ba0e6ac913e9e7900ac06aa12c675fdc560e5f9db15b3f44d0ea2d9d",
+      "bytes": 39106868,
       "raw_bytes": 30638176,
       "version": "v26.13.1",
       "major": 26,
       "abi": 147,
       "channel": "stable",
       "category": "node-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/86a0f4c82745a039a2496e4d7b4fdb861516cce7c3906a7feeda3ba548648e89"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f937a862ba0e6ac913e9e7900ac06aa12c675fdc560e5f9db15b3f44d0ea2d9d",
+      "history": [
+        {
+          "sha256": "86a0f4c82745a039a2496e4d7b4fdb861516cce7c3906a7feeda3ba548648e89",
+          "bytes": 39106845,
+          "version": "v26.13.1",
+          "abi": 147,
+          "retired_at": "2026-11-24T17:39:21.840Z"
+        }
+      ]
     },
     "node-26-win64.tar.zst": {
       "filename": "node-26-win64.tar.zst",
-      "sha256": "452e04c36117403d12ab8e6bd2c5c63c19e36a7f2e031cf6b235597eca56ec3a",
-      "bytes": 34979815,
+      "sha256": "ee38b623f1e53e07c1cd3bd7d70e90edc316315a868b78c3c885df1cd3b34dfa",
+      "bytes": 34979816,
       "raw_bytes": 41166246,
       "version": "v26.13.1",
       "major": 26,
       "abi": 147,
       "channel": "stable",
       "category": "node-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/452e04c36117403d12ab8e6bd2c5c63c19e36a7f2e031cf6b235597eca56ec3a"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/ee38b623f1e53e07c1cd3bd7d70e90edc316315a868b78c3c885df1cd3b34dfa",
+      "history": [
+        {
+          "sha256": "452e04c36117403d12ab8e6bd2c5c63c19e36a7f2e031cf6b235597eca56ec3a",
+          "bytes": 34979815,
+          "version": "v26.13.1",
+          "abi": 147,
+          "retired_at": "2026-11-24T17:39:21.840Z"
+        }
+      ]
     },
     "node-27-linux-arm64.tar.zst": {
       "filename": "node-27-linux-arm64.tar.zst",
-      "sha256": "f7ba76ad3233c233b759e45816873af2afb826c39b3e236d5a86eddcf76c3193",
-      "bytes": 44372325,
+      "sha256": "75e92642a07eb574e78d9a39eba9dc8e0aa215d5da48d7d15f13d31128380ffb",
+      "bytes": 44372323,
       "raw_bytes": 34237848,
       "version": "v27.0.0-alpha.0.1.1",
       "major": 27,
       "abi": 153,
       "channel": "alpha",
       "category": "node-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f7ba76ad3233c233b759e45816873af2afb826c39b3e236d5a86eddcf76c3193"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/75e92642a07eb574e78d9a39eba9dc8e0aa215d5da48d7d15f13d31128380ffb",
+      "history": [
+        {
+          "sha256": "f7ba76ad3233c233b759e45816873af2afb826c39b3e236d5a86eddcf76c3193",
+          "bytes": 44372325,
+          "version": "v27.0.0-alpha.0.1.1",
+          "abi": 153,
+          "retired_at": "2026-11-24T17:39:21.840Z"
+        }
+      ]
     },
     "node-27-linux-x64.tar.zst": {
       "filename": "node-27-linux-x64.tar.zst",
-      "sha256": "72d8ef60b3935e900b9b20e67681ead1b0723cc0b164834f18fbbd72c0f0283a",
-      "bytes": 44808547,
+      "sha256": "e094666dd7ede53c995a46239b26df334704c0794a4ead7925e4753216490553",
+      "bytes": 44808548,
       "raw_bytes": 35741744,
       "version": "v27.0.0-alpha.0.1.1",
       "major": 27,
       "abi": 153,
       "channel": "alpha",
       "category": "node-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/72d8ef60b3935e900b9b20e67681ead1b0723cc0b164834f18fbbd72c0f0283a"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/e094666dd7ede53c995a46239b26df334704c0794a4ead7925e4753216490553",
+      "history": [
+        {
+          "sha256": "72d8ef60b3935e900b9b20e67681ead1b0723cc0b164834f18fbbd72c0f0283a",
+          "bytes": 44808547,
+          "version": "v27.0.0-alpha.0.1.1",
+          "abi": 153,
+          "retired_at": "2026-11-24T17:39:21.840Z"
+        }
+      ]
     },
     "node-27-macos-arm64.tar.zst": {
       "filename": "node-27-macos-arm64.tar.zst",
-      "sha256": "f02192492f730a9f254fe5c7c0c9743cafea999d01d9b56b11723072b0cd54f0",
-      "bytes": 40572512,
+      "sha256": "02d56be1be168fd1ceb42ae9f596466d6b5bd753a757e866bf1bf020338ca91e",
+      "bytes": 40572521,
       "raw_bytes": 31699144,
       "version": "v27.0.0-alpha.0.1.1",
       "major": 27,
       "abi": 153,
       "channel": "alpha",
       "category": "node-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f02192492f730a9f254fe5c7c0c9743cafea999d01d9b56b11723072b0cd54f0"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/02d56be1be168fd1ceb42ae9f596466d6b5bd753a757e866bf1bf020338ca91e",
+      "history": [
+        {
+          "sha256": "f02192492f730a9f254fe5c7c0c9743cafea999d01d9b56b11723072b0cd54f0",
+          "bytes": 40572512,
+          "version": "v27.0.0-alpha.0.1.1",
+          "abi": 153,
+          "retired_at": "2026-11-24T17:39:21.840Z"
+        }
+      ]
     },
     "node-27-win64.tar.zst": {
       "filename": "node-27-win64.tar.zst",
-      "sha256": "f610e8e34c67a66551794a55b18b71c3f38f408c3578dc3da2136f8796122c2a",
-      "bytes": 35728980,
+      "sha256": "b960789446f4d5cbf6e7d65108fa3eada07f1da6c5ca95bf5747663f833c9c26",
+      "bytes": 35728979,
       "raw_bytes": 42034058,
       "version": "v27.0.0-alpha.0.1.1",
       "major": 27,
       "abi": 153,
       "channel": "alpha",
       "category": "node-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f610e8e34c67a66551794a55b18b71c3f38f408c3578dc3da2136f8796122c2a"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/b960789446f4d5cbf6e7d65108fa3eada07f1da6c5ca95bf5747663f833c9c26",
+      "history": [
+        {
+          "sha256": "f610e8e34c67a66551794a55b18b71c3f38f408c3578dc3da2136f8796122c2a",
+          "bytes": 35728980,
+          "version": "v27.0.0-alpha.0.1.1",
+          "abi": 153,
+          "retired_at": "2026-11-24T17:39:21.840Z"
+        }
+      ]
     },
     "node-linux-arm64.tar.zst": {
       "filename": "node-linux-arm64.tar.zst",
-      "sha256": "f7ba76ad3233c233b759e45816873af2afb826c39b3e236d5a86eddcf76c3193",
-      "bytes": 44372325,
+      "sha256": "75e92642a07eb574e78d9a39eba9dc8e0aa215d5da48d7d15f13d31128380ffb",
+      "bytes": 44372323,
       "raw_bytes": 34237848,
       "version": "v27.0.0-alpha.0.1.1",
       "major": 27,
       "abi": 153,
       "channel": "alpha",
       "category": "node-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f7ba76ad3233c233b759e45816873af2afb826c39b3e236d5a86eddcf76c3193"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/75e92642a07eb574e78d9a39eba9dc8e0aa215d5da48d7d15f13d31128380ffb",
+      "history": [
+        {
+          "sha256": "f7ba76ad3233c233b759e45816873af2afb826c39b3e236d5a86eddcf76c3193",
+          "bytes": 44372325,
+          "version": "v27.0.0-alpha.0.1.1",
+          "abi": 153,
+          "retired_at": "2026-11-24T17:39:21.840Z"
+        }
+      ]
     },
     "node-linux-x64.tar.zst": {
       "filename": "node-linux-x64.tar.zst",
-      "sha256": "72d8ef60b3935e900b9b20e67681ead1b0723cc0b164834f18fbbd72c0f0283a",
-      "bytes": 44808547,
+      "sha256": "e094666dd7ede53c995a46239b26df334704c0794a4ead7925e4753216490553",
+      "bytes": 44808548,
       "raw_bytes": 35741744,
       "version": "v27.0.0-alpha.0.1.1",
       "major": 27,
       "abi": 153,
       "channel": "alpha",
       "category": "node-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/72d8ef60b3935e900b9b20e67681ead1b0723cc0b164834f18fbbd72c0f0283a"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/e094666dd7ede53c995a46239b26df334704c0794a4ead7925e4753216490553",
+      "history": [
+        {
+          "sha256": "72d8ef60b3935e900b9b20e67681ead1b0723cc0b164834f18fbbd72c0f0283a",
+          "bytes": 44808547,
+          "version": "v27.0.0-alpha.0.1.1",
+          "abi": 153,
+          "retired_at": "2026-11-24T17:39:21.840Z"
+        }
+      ]
     },
     "node-macos-arm64.tar.zst": {
       "filename": "node-macos-arm64.tar.zst",
-      "sha256": "f02192492f730a9f254fe5c7c0c9743cafea999d01d9b56b11723072b0cd54f0",
-      "bytes": 40572512,
+      "sha256": "02d56be1be168fd1ceb42ae9f596466d6b5bd753a757e866bf1bf020338ca91e",
+      "bytes": 40572521,
       "raw_bytes": 31699144,
       "version": "v27.0.0-alpha.0.1.1",
       "major": 27,
       "abi": 153,
       "channel": "alpha",
       "category": "node-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f02192492f730a9f254fe5c7c0c9743cafea999d01d9b56b11723072b0cd54f0"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/02d56be1be168fd1ceb42ae9f596466d6b5bd753a757e866bf1bf020338ca91e",
+      "history": [
+        {
+          "sha256": "f02192492f730a9f254fe5c7c0c9743cafea999d01d9b56b11723072b0cd54f0",
+          "bytes": 40572512,
+          "version": "v27.0.0-alpha.0.1.1",
+          "abi": 153,
+          "retired_at": "2026-11-24T17:39:21.840Z"
+        }
+      ]
     },
     "node-win64.tar.zst": {
       "filename": "node-win64.tar.zst",
-      "sha256": "f610e8e34c67a66551794a55b18b71c3f38f408c3578dc3da2136f8796122c2a",
-      "bytes": 35728980,
+      "sha256": "b960789446f4d5cbf6e7d65108fa3eada07f1da6c5ca95bf5747663f833c9c26",
+      "bytes": 35728979,
       "raw_bytes": 42034058,
       "version": "v27.0.0-alpha.0.1.1",
       "major": 27,
       "abi": 153,
       "channel": "alpha",
       "category": "node-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f610e8e34c67a66551794a55b18b71c3f38f408c3578dc3da2136f8796122c2a"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/b960789446f4d5cbf6e7d65108fa3eada07f1da6c5ca95bf5747663f833c9c26",
+      "history": [
+        {
+          "sha256": "f610e8e34c67a66551794a55b18b71c3f38f408c3578dc3da2136f8796122c2a",
+          "bytes": 35728980,
+          "version": "v27.0.0-alpha.0.1.1",
+          "abi": 153,
+          "retired_at": "2026-11-24T17:39:21.840Z"
+        }
+      ]
     },
     "numpy-2.5.5.ghost.tar.gz": {
       "filename": "numpy-2.5.5.ghost.tar.gz",
