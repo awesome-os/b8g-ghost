@@ -2,8 +2,8 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T02:56:49.108Z",
-  "total_entries": 127,
+  "updated_at": "2026-11-24T03:11:48.710Z",
+  "total_entries": 129,
   "entries": {
     "01-browser-split-shell.exe": {
       "filename": "01-browser-split-shell.exe",
@@ -200,6 +200,24 @@
       "bytes": 2045,
       "category": "baseline",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/628b3dd4f087d4b315ae79e2633a84fb95706dea069f74df06f5d8444520d223"
+    },
+    "code-oss-app-linux-x64.tar.zst": {
+      "filename": "code-oss-app-linux-x64.tar.zst",
+      "sha256": "918b1dce71d7ec1e434bcf052a27051324bb64dd5eeed26e0c4f1ed45d0dc3cc",
+      "bytes": 62326376,
+      "raw_bytes": 214776735,
+      "version": "1.143.17232",
+      "category": "code-oss-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/918b1dce71d7ec1e434bcf052a27051324bb64dd5eeed26e0c4f1ed45d0dc3cc"
+    },
+    "code-oss-app-win64.tar.zst": {
+      "filename": "code-oss-app-win64.tar.zst",
+      "sha256": "cdb4c9743ac852246c771a672f59364946082c00f2aba39e3f2c107463e59384",
+      "bytes": 61379829,
+      "raw_bytes": 231406156,
+      "version": "1.143.17232",
+      "category": "code-oss-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/cdb4c9743ac852246c771a672f59364946082c00f2aba39e3f2c107463e59384"
     },
     "cryptography-50.0.2.ghost.tar.gz": {
       "filename": "cryptography-50.0.2.ghost.tar.gz",
