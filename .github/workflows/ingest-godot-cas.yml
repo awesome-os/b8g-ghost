@@ -1,0 +1,250 @@
+name: Ingest Rolling-Latest Upstream Godot Engine into Canonical Ghost CAS (cas-v1)
+
+on:
+  schedule:
+    - cron: '0 12 * * 3'
+  workflow_dispatch:
+    inputs:
+      godot_version:
+        description: 'Optional explicit Godot release tag override e.g. 4.7.2-stable (blank = latest)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  ingest-godot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install zstd and unzip
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq zstd unzip
+
+      - name: Download, Normalize & Upload Rolling-Latest Godot Engine -> cas-v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_VERSION: ${{ inputs.godot_version }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/godot-in /tmp/godot-out
+
+          node -e '
+            const fs = require("fs");
+            const inputVer = (process.env.INPUT_VERSION || "").trim();
+            const apiUrl = inputVer
+              ? `https://api.github.com/repos/godotengine/godot/releases/tags/${encodeURIComponent(inputVer)}`
+              : "https://api.github.com/repos/godotengine/godot/releases/latest";
+
+            const headers = {
+              "User-Agent": "b8g-ghost",
+              "Accept": "application/vnd.github+json"
+            };
+            if (process.env.GH_TOKEN) {
+              headers["Authorization"] = `Bearer ${process.env.GH_TOKEN}`;
+            }
+
+            (async () => {
+              const res = await fetch(apiUrl, { headers });
+              if (!res.ok) throw new Error(`HTTP ${res.status} for ${apiUrl}`);
+              const rel = await res.json();
+              const tag = (rel.tag_name || "").trim();
+              if (!tag) throw new Error("Missing tag_name in Godot release response");
+
+              const assets = rel.assets || [];
+              const winAsset = assets.find((a) => {
+                const n = a.name || "";
+                return /^Godot_v.*_win64\.exe\.zip$/i.test(n) && !/_mono/i.test(n);
+              });
+              const linuxAsset = assets.find((a) => {
+                const n = a.name || "";
+                return /^Godot_v.*_linux\.x86_64\.zip$/i.test(n) && !/_mono/i.test(n);
+              });
+
+              if (!winAsset || !winAsset.browser_download_url) {
+                throw new Error(`No standard Godot_v*_win64.exe.zip asset found in Godot release ${tag}`);
+              }
+              if (!linuxAsset || !linuxAsset.browser_download_url) {
+                throw new Error(`No standard Godot_v*_linux.x86_64.zip asset found in Godot release ${tag}`);
+              }
+
+              const picked = {
+                version: tag,
+                win64: { name: winAsset.name, url: winAsset.browser_download_url },
+                linux64: { name: linuxAsset.name, url: linuxAsset.browser_download_url }
+              };
+              fs.writeFileSync("/tmp/godot-in/resolved.json", JSON.stringify(picked, null, 2));
+              console.log(">>> Resolved Godot release:", picked.version);
+              console.log("    win64:  ", picked.win64.name, "->", picked.win64.url);
+              console.log("    linux64:", picked.linux64.name, "->", picked.linux64.url);
+            })().catch((err) => { console.error(err); process.exit(1); });
+          '
+
+          VER=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/godot-in/resolved.json','utf8')).version)")
+          WIN_URL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/godot-in/resolved.json','utf8')).win64.url)")
+          WIN_NAME=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/godot-in/resolved.json','utf8')).win64.name)")
+          LINUX_URL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/godot-in/resolved.json','utf8')).linux64.url)")
+          LINUX_NAME=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/godot-in/resolved.json','utf8')).linux64.name)")
+
+          # --- Win64 ---
+          echo ">>> Fetching $WIN_URL"
+          curl -fsSL "$WIN_URL" -o "/tmp/godot-in/${WIN_NAME}"
+          WIN_RAW_BYTES=$(stat -c%s "/tmp/godot-in/${WIN_NAME}")
+
+          WIN_WORK="/tmp/godot-in/work-win64"
+          WIN_STAGE="/tmp/godot-in/stage-win64"
+          rm -rf "$WIN_WORK" "$WIN_STAGE" && mkdir -p "$WIN_WORK" "$WIN_STAGE"
+          unzip -q "/tmp/godot-in/${WIN_NAME}" -d "$WIN_WORK"
+
+          WIN_BIN=$(find "$WIN_WORK" -maxdepth 3 -type f -iname "Godot*_win64.exe" ! -iname "*console*" | head -n 1 || true)
+          if [ -z "$WIN_BIN" ]; then
+            WIN_BIN=$(find "$WIN_WORK" -maxdepth 3 -type f -iname "*.exe" ! -iname "*console*" | head -n 1 || true)
+          fi
+          if [ -z "$WIN_BIN" ]; then
+            echo "ERROR: Could not locate Godot Win64 executable inside $WIN_NAME"
+            ls -laR "$WIN_WORK"
+            exit 1
+          fi
+          mv "$WIN_BIN" "$WIN_STAGE/godot.exe"
+
+          WIN_LOGICAL="godot-win64.tar.zst"
+          WIN_OUT="/tmp/godot-out/${WIN_LOGICAL}"
+          tar -C "$WIN_STAGE" -cf - . | zstd -q -9 -T0 -o "$WIN_OUT"
+          WIN_BYTES=$(stat -c%s "$WIN_OUT")
+          WIN_SHA=$(sha256sum "$WIN_OUT" | awk '{print $1}')
+          cp "$WIN_OUT" "/tmp/godot-out/${WIN_SHA}"
+          rm -rf "$WIN_WORK" "$WIN_STAGE" "/tmp/godot-in/${WIN_NAME}"
+
+          WIN_SAVED=$((WIN_RAW_BYTES - WIN_BYTES))
+          echo "    $WIN_LOGICAL: $WIN_RAW_BYTES B (upstream) -> $WIN_BYTES B (zst) | saved=$WIN_SAVED B | sha256=${WIN_SHA:0:12}..."
+
+          node -e "
+            const fs = require('fs');
+            fs.writeFileSync('/tmp/godot-out/${WIN_LOGICAL}.meta.json', JSON.stringify({
+              filename: '${WIN_LOGICAL}',
+              sha256: '${WIN_SHA}',
+              bytes: ${WIN_BYTES},
+              raw_bytes: ${WIN_RAW_BYTES},
+              version: '${VER}',
+              category: 'godot-upstream',
+              download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/${WIN_SHA}'
+            }, null, 2));
+          "
+
+          # --- Linux x64 ---
+          echo ">>> Fetching $LINUX_URL"
+          curl -fsSL "$LINUX_URL" -o "/tmp/godot-in/${LINUX_NAME}"
+          LINUX_RAW_BYTES=$(stat -c%s "/tmp/godot-in/${LINUX_NAME}")
+
+          LINUX_WORK="/tmp/godot-in/work-linux64"
+          LINUX_STAGE="/tmp/godot-in/stage-linux64"
+          rm -rf "$LINUX_WORK" "$LINUX_STAGE" && mkdir -p "$LINUX_WORK" "$LINUX_STAGE"
+          unzip -q "/tmp/godot-in/${LINUX_NAME}" -d "$LINUX_WORK"
+
+          LINUX_BIN=$(find "$LINUX_WORK" -maxdepth 3 -type f -iname "Godot*linux.x86_64" | head -n 1 || true)
+          if [ -z "$LINUX_BIN" ]; then
+            LINUX_BIN=$(find "$LINUX_WORK" -maxdepth 3 -type f | head -n 1 || true)
+          fi
+          if [ -z "$LINUX_BIN" ]; then
+            echo "ERROR: Could not locate Godot Linux x86_64 binary inside $LINUX_NAME"
+            ls -laR "$LINUX_WORK"
+            exit 1
+          fi
+          mv "$LINUX_BIN" "$LINUX_STAGE/godot"
+          chmod +x "$LINUX_STAGE/godot"
+
+          LINUX_LOGICAL="godot-linux-x64.tar.zst"
+          LINUX_OUT="/tmp/godot-out/${LINUX_LOGICAL}"
+          tar -C "$LINUX_STAGE" -cf - . | zstd -q -9 -T0 -o "$LINUX_OUT"
+          LINUX_BYTES=$(stat -c%s "$LINUX_OUT")
+          LINUX_SHA=$(sha256sum "$LINUX_OUT" | awk '{print $1}')
+          cp "$LINUX_OUT" "/tmp/godot-out/${LINUX_SHA}"
+          rm -rf "$LINUX_WORK" "$LINUX_STAGE" "/tmp/godot-in/${LINUX_NAME}"
+
+          LINUX_SAVED=$((LINUX_RAW_BYTES - LINUX_BYTES))
+          echo "    $LINUX_LOGICAL: $LINUX_RAW_BYTES B (upstream) -> $LINUX_BYTES B (zst) | saved=$LINUX_SAVED B | sha256=${LINUX_SHA:0:12}..."
+
+          node -e "
+            const fs = require('fs');
+            fs.writeFileSync('/tmp/godot-out/${LINUX_LOGICAL}.meta.json', JSON.stringify({
+              filename: '${LINUX_LOGICAL}',
+              sha256: '${LINUX_SHA}',
+              bytes: ${LINUX_BYTES},
+              raw_bytes: ${LINUX_RAW_BYTES},
+              version: '${VER}',
+              category: 'godot-upstream',
+              download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/${LINUX_SHA}'
+            }, null, 2));
+          "
+
+          BLOBS=$(find /tmp/godot-out -maxdepth 1 -type f -regextype posix-extended -regex '.*/[a-f0-9]{64}')
+          gh release upload cas-v1 $BLOBS --repo awesome-os/b8g-ghost --clobber
+
+      - name: Commit Updated manifests/index.json to Git
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          merge_manifest() {
+            node -e "
+              const fs = require('fs');
+              const path = require('path');
+              const idx = JSON.parse(fs.readFileSync('manifests/index.json', 'utf8'));
+              for (const f of fs.readdirSync('/tmp/godot-out').filter(x => x.endsWith('.meta.json')).sort()) {
+                const m = JSON.parse(fs.readFileSync(path.join('/tmp/godot-out', f), 'utf8'));
+                const prev = idx.entries[m.filename];
+                const history = Array.isArray(prev?.history) ? [...prev.history] : [];
+                if (prev && prev.sha256 && prev.sha256 !== m.sha256) {
+                  history.unshift({
+                    sha256: prev.sha256,
+                    bytes: prev.bytes,
+                    version: prev.version || 'prev',
+                    retired_at: new Date().toISOString()
+                  });
+                }
+                idx.entries[m.filename] = {
+                  filename: m.filename,
+                  sha256: m.sha256,
+                  bytes: m.bytes,
+                  raw_bytes: m.raw_bytes,
+                  version: m.version,
+                  category: m.category,
+                  download_url: m.download_url,
+                  ...(history.length > 0 ? { history: history.slice(0, 5) } : {})
+                };
+              }
+              const sorted = {};
+              for (const k of Object.keys(idx.entries).sort()) sorted[k] = idx.entries[k];
+              idx.entries = sorted;
+              idx.total_entries = Object.keys(sorted).length;
+              idx.updated_at = new Date().toISOString();
+              fs.writeFileSync('manifests/index.json', JSON.stringify(idx, null, 2) + '\n');
+              console.log('[godot-cas] Updated manifests/index.json -> total_entries=' + idx.total_entries);
+            "
+          }
+
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            merge_manifest
+            git add manifests/index.json
+            if git diff --cached --quiet; then
+              echo "[godot-cas] No manifest changes to commit."
+              exit 0
+            fi
+            git commit -m "feat(cas-v1): roll Godot Engine into canonical Ghost CAS"
+            if git pull --rebase origin main && git push origin main; then
+              exit 0
+            fi
+            git rebase --abort || true
+            echo "[godot-cas] Push/rebase conflict on attempt $attempt, retrying..."
+            sleep 3
+          done
+          echo "ERROR: Failed to push manifests/index.json after 5 attempts"
+          exit 1
