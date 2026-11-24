@@ -2,7 +2,7 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T04:34:31.013Z",
+  "updated_at": "2026-11-24T05:11:41.856Z",
   "total_entries": 143,
   "entries": {
     "01-browser-split-shell.exe": {
@@ -260,14 +260,20 @@
     },
     "electron-linux-arm64.tar.zst": {
       "filename": "electron-linux-arm64.tar.zst",
-      "sha256": "e8803c55068f4e8ae90af6c007faf3a74f5e5cb9c4ce6727bd4e3f17503a93d2",
-      "bytes": 114984118,
+      "sha256": "ea96aefc1f0b9926901a7138482d932f643bc15ac274e8970be325bc909627f3",
+      "bytes": 114984116,
       "raw_bytes": 133321204,
       "version": "v47.0.0-nightly.20261123",
       "channel": "nightly",
       "category": "electron-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/e8803c55068f4e8ae90af6c007faf3a74f5e5cb9c4ce6727bd4e3f17503a93d2",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/ea96aefc1f0b9926901a7138482d932f643bc15ac274e8970be325bc909627f3",
       "history": [
+        {
+          "sha256": "e8803c55068f4e8ae90af6c007faf3a74f5e5cb9c4ce6727bd4e3f17503a93d2",
+          "bytes": 114984118,
+          "version": "v47.0.0-nightly.20261123",
+          "retired_at": "2026-11-24T05:11:41.856Z"
+        },
         {
           "sha256": "8ba7b054be8cef2128e8f90af814ce7d2915699c80ff50a9e39b9b4f47357f83",
           "bytes": 107588065,
@@ -278,14 +284,20 @@
     },
     "electron-linux-x64.tar.zst": {
       "filename": "electron-linux-x64.tar.zst",
-      "sha256": "dec972b2c3e473d0132ec6d0c28b0458e4729a8d32ecc0a6edde32e31b02d793",
-      "bytes": 115576649,
+      "sha256": "9e5aa54120d8d32913226d8117c9ed5155715a04f90c94527120d36bf7fa8a50",
+      "bytes": 115576655,
       "raw_bytes": 134236150,
       "version": "v47.0.0-nightly.20261123",
       "channel": "nightly",
       "category": "electron-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/dec972b2c3e473d0132ec6d0c28b0458e4729a8d32ecc0a6edde32e31b02d793",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/9e5aa54120d8d32913226d8117c9ed5155715a04f90c94527120d36bf7fa8a50",
       "history": [
+        {
+          "sha256": "dec972b2c3e473d0132ec6d0c28b0458e4729a8d32ecc0a6edde32e31b02d793",
+          "bytes": 115576649,
+          "version": "v47.0.0-nightly.20261123",
+          "retired_at": "2026-11-24T05:11:41.856Z"
+        },
         {
           "sha256": "2ad39d3f0202e1a23977a7f281a65be8d1ea9a720fbe0575409aa8c84f61957e",
           "bytes": 106506966,
@@ -296,14 +308,20 @@
     },
     "electron-macos-arm64.tar.zst": {
       "filename": "electron-macos-arm64.tar.zst",
-      "sha256": "89ab3591238e1dfed25ac1f88b5098f9b60c518db972c3a9edee9bbe3fe0ebab",
-      "bytes": 108959360,
+      "sha256": "e66c92b512c4346c37077a5928694935f6348b07e824fa8e743614b126e712c4",
+      "bytes": 108959362,
       "raw_bytes": 126753699,
       "version": "v47.0.0-nightly.20261123",
       "channel": "nightly",
       "category": "electron-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/89ab3591238e1dfed25ac1f88b5098f9b60c518db972c3a9edee9bbe3fe0ebab",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/e66c92b512c4346c37077a5928694935f6348b07e824fa8e743614b126e712c4",
       "history": [
+        {
+          "sha256": "89ab3591238e1dfed25ac1f88b5098f9b60c518db972c3a9edee9bbe3fe0ebab",
+          "bytes": 108959360,
+          "version": "v47.0.0-nightly.20261123",
+          "retired_at": "2026-11-24T05:11:41.856Z"
+        },
         {
           "sha256": "5123db5f1cc044882989aa796cb6599ef9fb32a8378670f6ed7e1b63bffee667",
           "bytes": 103041304,
@@ -314,14 +332,20 @@
     },
     "electron-win64.tar.zst": {
       "filename": "electron-win64.tar.zst",
-      "sha256": "5461851161113d72ab2e8802d9db5335988ee58df1213f8e7759a50df64e717f",
-      "bytes": 136298897,
+      "sha256": "38da4ddcf2e4e3b419e8a04b222e0e659a802cbe4c92e48cd01ad2e43437d4d5",
+      "bytes": 136298909,
       "raw_bytes": 167529800,
       "version": "v47.0.0-nightly.20261123",
       "channel": "nightly",
       "category": "electron-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/5461851161113d72ab2e8802d9db5335988ee58df1213f8e7759a50df64e717f",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/38da4ddcf2e4e3b419e8a04b222e0e659a802cbe4c92e48cd01ad2e43437d4d5",
       "history": [
+        {
+          "sha256": "5461851161113d72ab2e8802d9db5335988ee58df1213f8e7759a50df64e717f",
+          "bytes": 136298897,
+          "version": "v47.0.0-nightly.20261123",
+          "retired_at": "2026-11-24T05:11:41.856Z"
+        },
         {
           "sha256": "74a96373cec4e79f1659879504c42cc0a82b754dba6aaeb264c454e3ce64ba77",
           "bytes": 127887941,
