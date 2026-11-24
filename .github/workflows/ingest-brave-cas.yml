@@ -1,0 +1,259 @@
+name: Ingest Debloated Rolling-Latest Upstream Brave into Canonical Ghost CAS (cas-v1)
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+    inputs:
+      brave_tag:
+        description: 'Optional explicit tag override (blank = latest non-prerelease with Win64 + Linux x64 zips)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  ingest-brave:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install zstd and unzip
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq zstd unzip
+
+      - name: Download, Debloat & Upload Rolling-Latest Brave -> cas-v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_TAG: ${{ inputs.brave_tag }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/brave-in /tmp/brave-out
+
+          node -e '
+            const https = require("https");
+            const fs = require("fs");
+            const token = process.env.GH_TOKEN || "";
+            const inputTag = (process.env.INPUT_TAG || "").trim();
+
+            function fetchJson(url) {
+              return new Promise((resolve, reject) => {
+                const headers = { "User-Agent": "b8g-ghost", "Accept": "application/vnd.github+json" };
+                if (token) headers["Authorization"] = "Bearer " + token;
+                https.get(url, { headers }, (res) => {
+                  let body = "";
+                  res.on("data", (c) => body += c);
+                  res.on("end", () => {
+                    if (res.statusCode >= 400) return reject(new Error("HTTP " + res.statusCode + ": " + body.slice(0, 300)));
+                    resolve(JSON.parse(body));
+                  });
+                }).on("error", reject);
+              });
+            }
+
+            (async () => {
+              let releases;
+              if (inputTag) {
+                const rel = await fetchJson("https://api.github.com/repos/brave/brave-browser/releases/tags/" + encodeURIComponent(inputTag));
+                releases = [rel];
+              } else {
+                releases = await fetchJson("https://api.github.com/repos/brave/brave-browser/releases?per_page=15");
+              }
+
+              const isWin = (a) => !a.name.includes("origin") && !a.name.includes("symbols") && a.name.endsWith("win32-x64.zip");
+              const isLinux = (a) => !a.name.includes("origin") && !a.name.includes("symbols") && a.name.endsWith("linux-amd64.zip");
+
+              let picked = null;
+              for (const r of releases) {
+                if (!inputTag && r.prerelease) continue;
+                const assets = Array.isArray(r.assets) ? r.assets : [];
+                const win = assets.find(isWin);
+                const lin = assets.find(isLinux);
+                if (win && lin) {
+                  picked = { tag: r.tag_name, win, lin };
+                  break;
+                }
+              }
+
+              if (!picked) {
+                throw new Error("No matching non-prerelease Brave release with both win32-x64.zip and linux-amd64.zip found");
+              }
+
+              fs.writeFileSync("/tmp/brave-in/resolved.json", JSON.stringify(picked, null, 2));
+              console.log(">>> Resolved Brave release:", picked.tag);
+              console.log("    win64 :", picked.win.name, "->", picked.win.browser_download_url);
+              console.log("    linux :", picked.lin.name, "->", picked.lin.browser_download_url);
+            })().catch((err) => { console.error(err); process.exit(1); });
+          '
+
+          TAG=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/brave-in/resolved.json','utf8')).tag)")
+          WIN_URL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/brave-in/resolved.json','utf8')).win.browser_download_url)")
+          WIN_NAME=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/brave-in/resolved.json','utf8')).win.name)")
+          LIN_URL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/brave-in/resolved.json','utf8')).lin.browser_download_url)")
+          LIN_NAME=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/brave-in/resolved.json','utf8')).lin.name)")
+
+          cat << 'EOF' > /tmp/brave-in/initial_preferences
+          {
+            "distribution": {
+              "skip_first_run_ui": true,
+              "suppress_first_run_default_browser_prompt": true,
+              "import_bookmarks": false,
+              "import_history": false,
+              "import_home_page": false,
+              "import_search_engine": false
+            },
+            "brave": {
+              "rewards": {
+                "enabled": false,
+                "show_brave_rewards_button_in_location_bar": false
+              },
+              "wallet": {
+                "show_wallet_icon_on_toolbar": false,
+                "default_ethereum_wallet": 1,
+                "default_solana_wallet": 1
+              },
+              "today": {
+                "opted_in": false,
+                "should_show_toolbar_button": false
+              },
+              "ai_chat": {
+                "opted_in": false,
+                "show_toolbar_button": false,
+                "autocomplete_provider_enabled": false
+              },
+              "p3a": {
+                "enabled": false,
+                "notice_acknowledged": true
+              },
+              "stats": {
+                "reporting_enabled": false,
+                "ping_enabled": false
+              },
+              "brave_ads": {
+                "enabled": false
+              },
+              "brave_vpn": {
+                "show_button": false
+              },
+              "sidebar": {
+                "sidebar_show_option": 3
+              }
+            },
+            "metrics": {
+              "reporting_enabled": false
+            }
+          }
+          EOF
+
+          process_target() {
+            local target_id="$1"
+            local logical="$2"
+            local zip_name="$3"
+            local url="$4"
+
+            echo ">>> Fetching $url"
+            curl -fsSL "$url" -o "/tmp/brave-in/${zip_name}"
+            local raw_bytes
+            raw_bytes=$(stat -c%s "/tmp/brave-in/${zip_name}")
+
+            local work="/tmp/brave-in/work-${target_id}"
+            rm -rf "$work" && mkdir -p "$work"
+            unzip -q "/tmp/brave-in/${zip_name}" -d "$work"
+
+            # Debloat: strip ~55 unused locale .pak files (keep en-US.pak)
+            find "$work" -type f -ipath '*/locales/*.pak' ! -iname 'en-US.pak' -delete
+
+            # Strip BraveUpdate / installer / license bloat if present
+            find "$work" -iname 'BraveUpdate*' -exec rm -rf {} + || true
+            find "$work" -type f \( -iname 'setup.exe' -o -iname '*installer*.exe' -o -iname 'LICENSES.chromium.html' \) -delete || true
+
+            # Install clean initial_preferences disabling Rewards, Wallet, News, Leo AI & Telemetry
+            cp /tmp/brave-in/initial_preferences "$work/initial_preferences"
+            local bin_dir
+            bin_dir=$(find "$work" -maxdepth 2 -type f \( -name 'brave.exe' -o -name 'brave' \) -printf '%h\n' | head -n 1 || true)
+            if [ -n "$bin_dir" ] && [ "$bin_dir" != "$work" ]; then
+              cp /tmp/brave-in/initial_preferences "$bin_dir/initial_preferences"
+            fi
+
+            local out_archive="/tmp/brave-out/${logical}"
+            tar -C "$work" -cf - . | zstd -q -9 -T0 -o "$out_archive"
+            local debloated_bytes
+            debloated_bytes=$(stat -c%s "$out_archive")
+            local sha
+            sha=$(sha256sum "$out_archive" | awk '{print $1}')
+            cp "$out_archive" "/tmp/brave-out/${sha}"
+            rm -rf "$work" "/tmp/brave-in/${zip_name}"
+
+            local saved=$((raw_bytes - debloated_bytes))
+            echo "    $logical: $raw_bytes B (zip) -> $debloated_bytes B (debloated zst) | saved=$saved B | sha256=${sha:0:12}..."
+
+            node -e "
+              const fs = require('fs');
+              fs.writeFileSync('/tmp/brave-out/${logical}.meta.json', JSON.stringify({
+                filename: '${logical}',
+                sha256: '${sha}',
+                bytes: ${debloated_bytes},
+                raw_bytes: ${raw_bytes},
+                version: '${TAG}',
+                category: 'brave-upstream',
+                download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/${sha}'
+              }, null, 2));
+            "
+          }
+
+          process_target "win64" "brave-win64.tar.zst" "$WIN_NAME" "$WIN_URL"
+          process_target "linux-x64" "brave-linux-x64.tar.zst" "$LIN_NAME" "$LIN_URL"
+
+          BLOBS=$(find /tmp/brave-out -maxdepth 1 -type f -regextype posix-extended -regex '.*/[a-f0-9]{64}')
+          gh release upload cas-v1 $BLOBS --repo awesome-os/b8g-ghost --clobber
+
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const idx = JSON.parse(fs.readFileSync('manifests/index.json', 'utf8'));
+            for (const f of fs.readdirSync('/tmp/brave-out').filter(x => x.endsWith('.meta.json')).sort()) {
+              const m = JSON.parse(fs.readFileSync(path.join('/tmp/brave-out', f), 'utf8'));
+              const prev = idx.entries[m.filename];
+              const history = Array.isArray(prev?.history) ? [...prev.history] : [];
+              if (prev && prev.sha256 && prev.sha256 !== m.sha256) {
+                history.unshift({
+                  sha256: prev.sha256,
+                  bytes: prev.bytes,
+                  version: prev.version || 'prev',
+                  retired_at: new Date().toISOString()
+                });
+              }
+              idx.entries[m.filename] = {
+                filename: m.filename,
+                sha256: m.sha256,
+                bytes: m.bytes,
+                raw_bytes: m.raw_bytes,
+                version: m.version,
+                category: m.category,
+                download_url: m.download_url,
+                ...(history.length > 0 ? { history: history.slice(0, 5) } : {})
+              };
+            }
+            const sorted = {};
+            for (const k of Object.keys(idx.entries).sort()) sorted[k] = idx.entries[k];
+            idx.entries = sorted;
+            idx.total_entries = Object.keys(sorted).length;
+            idx.updated_at = new Date().toISOString();
+            fs.writeFileSync('manifests/index.json', JSON.stringify(idx, null, 2) + '\n');
+            console.log('[brave-cas] Updated manifests/index.json -> total_entries=' + idx.total_entries);
+          "
+
+      - name: Commit Updated manifests/index.json to Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifests/index.json
+          if ! git diff --cached --quiet; then
+            git commit -m "feat(cas-v1): roll debloated Brave into canonical Ghost CAS"
+            git pull --rebase origin main
+            git push origin main
+          fi
