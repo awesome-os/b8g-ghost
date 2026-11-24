@@ -31,8 +31,10 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install zstd and unzip
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq zstd unzip
+      - name: Install zstd, unzip, and resedit (pure-JS PE brander)
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq zstd unzip
+          npm install --no-save resedit
 
       - name: Download, Debloat & Upload Bleeding-Edge Electron -> cas-v1
         env:
@@ -88,6 +90,11 @@ jobs:
             fi
             if [ -d "$work/Electron.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources" ]; then
               find "$work/Electron.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources" -maxdepth 1 -type d -name '*.lproj' ! -name 'en.lproj' ! -name 'en_US.lproj' -exec rm -rf {} +
+            fi
+
+            # Brand Win64 electron.exe with Lumi White Dragon icon + "Sectium Runtime" (replaces Electron atom in Task Manager)
+            if [ "$upstream_target" = "win32-x64" ] && [ -f "$work/electron.exe" ] && [ -f "assets/lumi-white-dragon.ico" ]; then
+              node brand-electron-pe.mts "$work/electron.exe" "assets/lumi-white-dragon.ico" "Sectium Runtime"
             fi
 
             out_archive="/tmp/electron-out/${logical}"
