@@ -754,5 +754,6 @@
       "category": "chromium-shard",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4e5454ca4168b5d0f2e4746f1ea9a419e21874a6015f5e3c1a7c28892f6dc5d1"
     }
-  }
+  },
+  "retention_policy": "rolling-latest-keep-last-5"
 }
