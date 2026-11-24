@@ -1,0 +1,54 @@
+name: Ghost CAS Garbage Collector — Keep Last 5 Versions & Purge Stale Blobs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * 0'
+
+permissions:
+  contents: write
+
+jobs:
+  gc-cas-v1:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Enforce Keep-Last-5 Retention Policy & Purge Unreferenced cas-v1 Blobs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view cas-v1 --repo awesome-os/b8g-ghost --json assets -q '.assets[].name' > /tmp/cas-assets.txt
+          node -e "
+            const fs = require('fs');
+            const idx = JSON.parse(fs.readFileSync('manifests/index.json', 'utf8'));
+            const keep = new Set();
+            for (const entry of Object.values(idx.entries)) {
+              if (entry.sha256) keep.add(entry.sha256);
+              if (Array.isArray(entry.history)) {
+                entry.history = entry.history.slice(0, 5);
+                for (const h of entry.history) keep.add(h);
+              }
+            }
+            const assets = fs.readFileSync('/tmp/cas-assets.txt', 'utf8').split(/\r?\n/).filter(Boolean);
+            const stale = assets.filter(a => /^[0-9a-f]{64}$/.test(a) && !keep.has(a));
+            fs.writeFileSync('/tmp/cas-stale.txt', stale.join('\n') + (stale.length ? '\n' : ''));
+            idx.retention_policy = 'rolling-latest-keep-last-5';
+            fs.writeFileSync('manifests/index.json', JSON.stringify(idx, null, 2) + '\n');
+            console.log('[cas-gc] Total cas-v1 assets=' + assets.length + ' | Retained (latest + last 5)=' + keep.size + ' | Stale to purge=' + stale.length);
+          "
+          while IFS= read -r sha; do
+            [ -n "$sha" ] || continue
+            echo "  [purge] Deleting stale cas-v1 blob $sha..."
+            gh release delete-asset cas-v1 "$sha" --repo awesome-os/b8g-ghost --yes || true
+          done < /tmp/cas-stale.txt
+
+      - name: Commit Retention Metadata if Updated
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add manifests/index.json
+          git diff --cached --quiet || (git commit -m "chore(cas-gc): enforce rolling-latest keep-last-5 retention policy" && git push origin main)

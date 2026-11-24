@@ -73,7 +73,10 @@ jobs:
             const crypto = require('crypto');
 
             const existing = new Set(fs.readFileSync('/tmp/existing-cas.txt', 'utf8').split(/\r?\n/).filter(Boolean));
-            const entries = {};
+            const prevIdx = fs.existsSync('manifests/index.json')
+              ? JSON.parse(fs.readFileSync('manifests/index.json', 'utf8'))
+              : { entries: {} };
+            const entries = { ...(prevIdx.entries || {}) };
             const toUpload = [];
             const sources = [
               { dir: '/tmp/cas-in/baseline', category: 'baseline' },
@@ -92,12 +95,19 @@ jobs:
                 if (!st.isFile() || st.size === 0) continue;
                 const buf = fs.readFileSync(full);
                 const sha256 = crypto.createHash('sha256').update(buf).digest('hex');
+                const prevEntry = entries[file];
+                const prevHist = Array.isArray(prevEntry?.history) ? prevEntry.history : [];
+                const nextHist =
+                  prevEntry && prevEntry.sha256 && prevEntry.sha256 !== sha256
+                    ? [prevEntry.sha256, ...prevHist.filter((h) => h !== sha256 && h !== prevEntry.sha256)].slice(0, 5)
+                    : prevHist.slice(0, 5);
                 entries[file] = {
                   filename: file,
                   sha256,
                   bytes: st.size,
                   category: src.category,
-                  download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/' + sha256
+                  download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/' + sha256,
+                  ...(nextHist.length ? { history: nextHist } : {})
                 };
                 if (!existing.has(sha256)) {
                   existing.add(sha256);
