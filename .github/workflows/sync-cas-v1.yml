@@ -4,17 +4,19 @@ on:
   workflow_dispatch:
     inputs:
       baseline_tag:
-        description: 'Sectium baseline tag to ingest into cas-v1'
+        description: 'Sectium baseline tag (or "auto" for latest *-baseline)'
         required: true
-        default: 'v0.6.1-baseline'
+        default: 'auto'
       holo_5os_tag:
-        description: 'Holo 5-OS shards tag to ingest into cas-v1'
+        description: 'Holo 5-OS shards tag (or "auto" for latest *-holo-5os)'
         required: true
-        default: 'v0.2.0-holo-5os'
+        default: 'auto'
       toolchains_tag:
-        description: 'Ghost toolchains tag to ingest into cas-v1'
+        description: 'Ghost toolchains tag (or "auto" for latest *-ghost-toolchains)'
         required: true
-        default: 'v0.1.0-ghost-toolchains'
+        default: 'auto'
+  schedule:
+    - cron: '0 5 * * *'
 
 permissions:
   contents: write
@@ -41,17 +43,42 @@ jobs:
       - name: Ingest Blobs into O(1) cas-v1 & Emit manifests/index.json
         env:
           GH_TOKEN: ${{ github.token }}
-          BASELINE_TAG: ${{ inputs.baseline_tag || 'v0.6.1-baseline' }}
-          HOLO_5OS_TAG: ${{ inputs.holo_5os_tag || 'v0.2.0-holo-5os' }}
-          TOOLCHAINS_TAG: ${{ inputs.toolchains_tag || 'v0.1.0-ghost-toolchains' }}
+          BASELINE_TAG_IN: ${{ inputs.baseline_tag || 'auto' }}
+          HOLO_5OS_TAG_IN: ${{ inputs.holo_5os_tag || 'auto' }}
+          TOOLCHAINS_TAG_IN: ${{ inputs.toolchains_tag || 'auto' }}
         run: |
-          mkdir -p /tmp/cas-in/baseline /tmp/cas-in/shards /tmp/cas-in/holo5os /tmp/cas-in/toolchains /tmp/cas-in/downstream /tmp/cas-upload manifests
+          mkdir -p /tmp/cas-in/baseline /tmp/cas-in/v8cloud /tmp/cas-in/shards /tmp/cas-in/holo5os /tmp/cas-in/toolchains /tmp/cas-in/downstream /tmp/cas-upload manifests
+
+          # Auto-discover latest release tags across awesome-os producer repos
+          if [ "$BASELINE_TAG_IN" = "auto" ]; then
+            BASELINE_TAG=$(gh release list --repo awesome-os/sectium-browser --limit 20 --json tagName -q '.[] | select(.tagName | endswith("-baseline")) | .tagName' | head -n 1)
+          else
+            BASELINE_TAG="$BASELINE_TAG_IN"
+          fi
+          V8_CLOUD_TAG=$(gh release list --repo awesome-os/sectium-browser --limit 20 --json tagName -q '.[] | select(.tagName | endswith("-v8-cloud")) | .tagName' | head -n 1)
+          if [ "$HOLO_5OS_TAG_IN" = "auto" ]; then
+            HOLO_5OS_TAG=$(gh release list --repo awesome-os/upstream-mirrors --limit 20 --json tagName -q '.[] | select(.tagName | endswith("-holo-5os")) | .tagName' | head -n 1)
+          else
+            HOLO_5OS_TAG="$HOLO_5OS_TAG_IN"
+          fi
+          if [ "$TOOLCHAINS_TAG_IN" = "auto" ]; then
+            TOOLCHAINS_TAG=$(gh release list --repo awesome-os/upstream-mirrors --limit 20 --json tagName -q '.[] | select(.tagName | endswith("-ghost-toolchains")) | .tagName' | head -n 1)
+          else
+            TOOLCHAINS_TAG="$TOOLCHAINS_TAG_IN"
+          fi
+          export BASELINE_TAG V8_CLOUD_TAG HOLO_5OS_TAG TOOLCHAINS_TAG
+          echo "[cas-v1] Auto-discovered tags: baseline=$BASELINE_TAG | v8=$V8_CLOUD_TAG | holo5os=$HOLO_5OS_TAG | toolchains=$TOOLCHAINS_TAG"
 
           # Fetch existing cas-v1 asset names so already-uploaded SHA-256 blobs are skipped in O(1)
           gh release view cas-v1 --repo awesome-os/b8g-ghost --json assets -q '.assets[].name' > /tmp/existing-cas.txt || true
 
           echo "Downloading baseline ($BASELINE_TAG)..."
           gh release download "$BASELINE_TAG" --repo awesome-os/sectium-browser --dir /tmp/cas-in/baseline --clobber || true
+
+          if [ -n "$V8_CLOUD_TAG" ]; then
+            echo "Downloading latest cloud V8 ($V8_CLOUD_TAG)..."
+            gh release download "$V8_CLOUD_TAG" --repo awesome-os/sectium-browser --pattern "v8-shared-*" --dir /tmp/cas-in/v8cloud --clobber || true
+          fi
 
           echo "Downloading 10 Chromium shards (v0.6.0-chromium-shards)..."
           gh release download "v0.6.0-chromium-shards" --repo awesome-os/sectium-browser --pattern "*.tar.gz" --dir /tmp/cas-in/shards --clobber || true
@@ -80,6 +107,7 @@ jobs:
             const toUpload = [];
             const sources = [
               { dir: '/tmp/cas-in/baseline', category: 'baseline' },
+              { dir: '/tmp/cas-in/v8cloud', category: 'v8-cloud' },
               { dir: '/tmp/cas-in/shards', category: 'chromium-shard' },
               { dir: '/tmp/cas-in/holo5os', category: 'holo-5os' },
               { dir: '/tmp/cas-in/toolchains', category: 'toolchain' },
