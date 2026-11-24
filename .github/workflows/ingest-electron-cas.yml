@@ -5,8 +5,17 @@ on:
     - cron: '0 6 * * *'
   workflow_dispatch:
     inputs:
+      channel:
+        description: 'Release channel: nightly (bleeding-edge v47+), alpha (v46+), or stable (v45+)'
+        required: false
+        default: 'nightly'
+        type: choice
+        options:
+          - nightly
+          - alpha
+          - stable
       electron_tag:
-        description: 'Optional Electron tag (e.g. v35.0.0); blank = latest stable'
+        description: 'Optional explicit tag override (blank = latest for chosen channel)'
         required: false
         default: ''
 
@@ -25,9 +34,10 @@ jobs:
       - name: Install zstd and unzip
         run: sudo apt-get update -qq && sudo apt-get install -y -qq zstd unzip
 
-      - name: Download, Debloat & Upload Rolling-Latest Electron -> cas-v1
+      - name: Download, Debloat & Upload Bleeding-Edge Electron -> cas-v1
         env:
           GH_TOKEN: ${{ github.token }}
+          CHANNEL: ${{ inputs.channel || 'nightly' }}
           INPUT_TAG: ${{ inputs.electron_tag }}
         run: |
           set -euo pipefail
@@ -35,12 +45,23 @@ jobs:
 
           if [ -n "$INPUT_TAG" ]; then
             TAG="$INPUT_TAG"
+            if [[ "$TAG" == *nightly* ]]; then
+              REPO="electron/nightlies"
+            else
+              REPO="electron/electron"
+            fi
+          elif [ "$CHANNEL" = "nightly" ]; then
+            REPO="electron/nightlies"
+            TAG=$(curl -fsSL -H "User-Agent: b8g-ghost" "https://api.github.com/repos/${REPO}/releases?per_page=1" | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); console.log(d[0].tag_name)")
+          elif [ "$CHANNEL" = "alpha" ]; then
+            REPO="electron/electron"
+            TAG=$(curl -fsSL -H "User-Agent: b8g-ghost" "https://api.github.com/repos/${REPO}/releases?per_page=5" | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); console.log(d[0].tag_name)")
           else
-            TAG=$(curl -fsSL -H "User-Agent: b8g-ghost" https://api.github.com/repos/electron/electron/releases/latest | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); console.log(d.tag_name)")
+            REPO="electron/electron"
+            TAG=$(curl -fsSL -H "User-Agent: b8g-ghost" "https://api.github.com/repos/${REPO}/releases/latest" | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); console.log(d.tag_name)")
           fi
-          echo ">>> Target upstream Electron release: $TAG"
+          echo ">>> Target Electron release: ${REPO}@${TAG} (channel=${CHANNEL})"
 
-          # Map upstream Electron zip suffixes -> canonical Ghost CAS logical names
           declare -A TARGETS=(
             ["linux-x64"]="electron-linux-x64.tar.zst"
             ["linux-arm64"]="electron-linux-arm64.tar.zst"
@@ -51,7 +72,7 @@ jobs:
           for upstream_target in "${!TARGETS[@]}"; do
             logical="${TARGETS[$upstream_target]}"
             zip_name="electron-${TAG}-${upstream_target}.zip"
-            url="https://github.com/electron/electron/releases/download/${TAG}/${zip_name}"
+            url="https://github.com/${REPO}/releases/download/${TAG}/${zip_name}"
             echo ">>> Fetching $url"
             curl -fsSL "$url" -o "/tmp/electron-in/${zip_name}"
             raw_bytes=$(stat -c%s "/tmp/electron-in/${zip_name}")
@@ -65,7 +86,6 @@ jobs:
             if [ -d "$work/locales" ]; then
               find "$work/locales" -type f -name '*.pak' ! -name 'en-US.pak' -delete
             fi
-            # macOS .app bundle locales cleanup
             if [ -d "$work/Electron.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources" ]; then
               find "$work/Electron.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources" -maxdepth 1 -type d -name '*.lproj' ! -name 'en.lproj' ! -name 'en_US.lproj' -exec rm -rf {} +
             fi
@@ -88,17 +108,16 @@ jobs:
                 bytes: ${debloated_bytes},
                 raw_bytes: ${raw_bytes},
                 version: '${TAG}',
+                channel: '${CHANNEL}',
                 category: 'electron-upstream',
                 download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/${sha}'
               }, null, 2));
             "
           done
 
-          # Upload SHA-256 blobs into canonical cas-v1
           BLOBS=$(find /tmp/electron-out -maxdepth 1 -type f -regextype posix-extended -regex '.*/[a-f0-9]{64}')
           gh release upload cas-v1 $BLOBS --repo awesome-os/b8g-ghost --clobber
 
-          # Merge into manifests/index.json with Keep-Last-5 history
           node -e "
             const fs = require('fs');
             const path = require('path');
@@ -121,6 +140,7 @@ jobs:
                 bytes: m.bytes,
                 raw_bytes: m.raw_bytes,
                 version: m.version,
+                channel: m.channel,
                 category: m.category,
                 download_url: m.download_url,
                 ...(history.length > 0 ? { history: history.slice(0, 5) } : {})
@@ -139,5 +159,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
           git add manifests/index.json
-          git diff --cached --quiet || (git commit -m "feat(cas-v1): ingest debloated rolling-latest upstream Electron into canonical Ghost CAS" && git push origin main)
+          git diff --cached --quiet || (git commit -m "feat(cas-v1): roll bleeding-edge Electron (${{ inputs.channel || 'nightly' }}) into canonical Ghost CAS" && git push origin main)

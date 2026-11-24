@@ -1,12 +1,12 @@
-name: Ingest Debloated Rolling-Latest Code - OSS (VSCodium) into Canonical Ghost CAS (cas-v1)
+name: Build & Ingest Latest MIT Code - OSS (microsoft/vscode) into Canonical Ghost CAS (cas-v1)
 
 on:
   schedule:
     - cron: '0 7 * * *'
   workflow_dispatch:
     inputs:
-      vscodium_tag:
-        description: 'Optional VSCodium release tag (e.g. 1.143.17232); blank = latest stable'
+      vscode_tag:
+        description: 'Optional microsoft/vscode tag (e.g. 1.147.0); blank = latest release'
         required: false
         default: ''
 
@@ -14,142 +14,140 @@ permissions:
   contents: write
 
 jobs:
-  ingest-code-oss:
+  resolve-version:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.ver.outputs.tag }}
+    steps:
+      - id: ver
+        env:
+          INPUT_TAG: ${{ inputs.vscode_tag }}
+        run: |
+          if [ -n "$INPUT_TAG" ]; then
+            TAG="$INPUT_TAG"
+          else
+            TAG=$(curl -fsSL -H "User-Agent: b8g-ghost" https://api.github.com/repos/microsoft/vscode/releases/latest | node -e "const d=JSON.parse(require('fs').readFileSync(0,'utf8')); console.log(d.tag_name)")
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo ">>> Target microsoft/vscode MIT release: $TAG"
+
+  build-code-oss:
+    needs: resolve-version
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            logical: code-oss-app-linux-x64.tar.zst
+            gulp_task: vscode-linux-x64-min
+            out_dir: ../VSCode-linux-x64/resources/app
+          - os: windows-latest
+            logical: code-oss-app-win64.tar.zst
+            gulp_task: vscode-win32-x64-min
+            out_dir: ../VSCode-win32-x64/resources/app
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Shallow clone microsoft/vscode @ ${{ needs.resolve-version.outputs.tag }}
+        shell: bash
+        run: |
+          git clone --depth 1 --branch "${{ needs.resolve-version.outputs.tag }}" https://github.com/microsoft/vscode.git vscode-src
+
+      - name: Setup Node.js matching vscode .nvmrc
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: vscode-src/.nvmrc
+
+      - name: Install Linux build deps
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libx11-dev libxkbfile-dev libsecret-1-dev libkrb5-dev zstd
+
+      - name: Patch product.json -> Awesome-OS Code - OSS (Open VSX, zero telemetry)
+        shell: bash
+        run: |
+          node -e "
+            const fs = require('fs');
+            const p = 'vscode-src/product.json';
+            const prod = JSON.parse(fs.readFileSync(p, 'utf8'));
+            prod.nameShort = 'Awesome-OS Code - OSS';
+            prod.nameLong = 'Awesome-OS Code - OSS';
+            prod.applicationName = 'code-oss';
+            prod.dataFolderName = '.awesome-code-oss';
+            prod.extensionsGallery = {
+              serviceUrl: 'https://open-vsx.org/vscode/gallery',
+              itemUrl: 'https://open-vsx.org/vscode/item',
+              resourceUrlTemplate: 'https://open-vsx.org/vscode/unpkg/{publisher}/{name}/{version}/{path}',
+              controlUrl: '',
+              recommendationsUrl: ''
+            };
+            delete prod.aiConfig;
+            fs.writeFileSync(p, JSON.stringify(prod, null, 2) + '\n');
+            console.log('Patched product.json -> Awesome-OS Code - OSS');
+          "
+
+      - name: Install dependencies & build Code - OSS resources/app
+        shell: bash
+        working-directory: vscode-src
+        env:
+          NODE_OPTIONS: '--max-old-space-size=8192'
+          VSCODE_SKIP_NODE_VERSION_CHECK: '1'
+        run: |
+          npm ci
+          npm run gulp ${{ matrix.gulp_task }}
+
+      - name: Pack app-only resources/app (zero Electron) & upload to cas-v1
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.resolve-version.outputs.tag }}
+        run: |
+          set -euo pipefail
+          APP_DIR="vscode-src/${{ matrix.out_dir }}"
+          if [ ! -f "$APP_DIR/package.json" ]; then
+            echo "ERROR: $APP_DIR/package.json not found"
+            exit 1
+          fi
+          mkdir -p out-cas
+          tar -C "$APP_DIR" -cf - . | zstd -q -9 -T0 -o "out-cas/${{ matrix.logical }}"
+          BYTES=$(stat -c%s "out-cas/${{ matrix.logical }}" 2>/dev/null || wc -c < "out-cas/${{ matrix.logical }}")
+          SHA=$(sha256sum "out-cas/${{ matrix.logical }}" | awk '{print $1}')
+          cp "out-cas/${{ matrix.logical }}" "out-cas/${SHA}"
+          gh release upload cas-v1 "out-cas/${SHA}" --repo awesome-os/b8g-ghost --clobber
+          node -e "
+            const fs = require('fs');
+            fs.writeFileSync('out-cas/${{ matrix.logical }}.meta.json', JSON.stringify({
+              filename: '${{ matrix.logical }}',
+              sha256: '${SHA}',
+              bytes: Number('${BYTES}'),
+              version: '${TAG}',
+              category: 'code-oss-upstream',
+              download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/${SHA}'
+            }, null, 2));
+          "
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: meta-${{ matrix.logical }}
+          path: out-cas/*.meta.json
+
+  update-index:
+    needs: [resolve-version, build-code-oss]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/download-artifact@v4
         with:
-          node-version: '22'
+          pattern: meta-*
+          path: /tmp/code-oss-meta
+          merge-multiple: true
 
-      - name: Install zstd and unzip
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq zstd unzip
-
-      - name: Download, Debloat (Strip Duplicated Electron) & Upload Code - OSS -> cas-v1
-        env:
-          GH_TOKEN: ${{ github.token }}
-          INPUT_TAG: ${{ inputs.vscodium_tag }}
+      - name: Merge Code - OSS ${{ needs.resolve-version.outputs.tag }} into manifests/index.json (Keep-Last-5)
         run: |
-          set -euo pipefail
-          mkdir -p /tmp/code-oss-in /tmp/code-oss-out
-
-          if [ -n "$INPUT_TAG" ]; then
-            API_URL="https://api.github.com/repos/VSCodium/vscodium/releases/tags/${INPUT_TAG}"
-          else
-            API_URL="https://api.github.com/repos/VSCodium/vscodium/releases/latest"
-          fi
-
-          curl -fsSL -H "User-Agent: b8g-ghost" "$API_URL" -o /tmp/code-oss-in/release.json
-
-          # Resolve version and exact asset download URLs from release JSON
-          node -e "
-            const fs = require('fs');
-            const rel = JSON.parse(fs.readFileSync('/tmp/code-oss-in/release.json', 'utf8'));
-            const ver = rel.tag_name;
-            if (!ver) throw new Error('Missing tag_name in VSCodium release JSON');
-            const assets = Array.isArray(rel.assets) ? rel.assets : [];
-
-            const targets = [
-              {
-                key: 'linux-x64',
-                logical: 'code-oss-app-linux-x64.tar.zst',
-                ext: 'tar.gz',
-                pattern: /^VSCodium-linux-x64-.*\.tar\.gz$/
-              },
-              {
-                key: 'win32-x64',
-                logical: 'code-oss-app-win64.tar.zst',
-                ext: 'zip',
-                pattern: /^VSCodium-win32-x64-.*\.zip$/
-              }
-            ];
-
-            const resolved = targets.map(t => {
-              const hit = assets.find(a => t.pattern.test(a.name));
-              if (!hit) {
-                throw new Error('Could not find VSCodium asset matching ' + t.pattern + ' in release ' + ver);
-              }
-              return {
-                key: t.key,
-                logical: t.logical,
-                ext: t.ext,
-                name: hit.name,
-                url: hit.browser_download_url
-              };
-            });
-
-            fs.writeFileSync('/tmp/code-oss-in/targets.json', JSON.stringify({ version: ver, targets: resolved }, null, 2));
-            console.log('>>> Target upstream VSCodium (Code - OSS) release: ' + ver);
-            for (const r of resolved) {
-              console.log('    Discovered asset: ' + r.name + ' -> ' + r.logical);
-            }
-          "
-
-          VER=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/code-oss-in/targets.json','utf8')).version)")
-
-          while IFS=$'\t' read -r key logical ext asset_name asset_url; do
-            echo ">>> Fetching $asset_url"
-            in_file="/tmp/code-oss-in/${asset_name}"
-            curl -fsSL "$asset_url" -o "$in_file"
-            raw_bytes=$(stat -c%s "$in_file")
-
-            work="/tmp/code-oss-in/work-${key}"
-            rm -rf "$work" && mkdir -p "$work"
-            if [ "$ext" = "tar.gz" ]; then
-              tar -xzf "$in_file" -C "$work"
-            else
-              unzip -q "$in_file" -d "$work"
-            fi
-
-            # Debloat: keep ONLY resources/app/ (pure Code - OSS IDE workbench + built-in extensions),
-            # stripping duplicated Electron binaries, icudtl.dat, ffmpeg, locales/, LICENSES.chromium.html, v8_context_snapshot.bin
-            app_dir=$(find "$work" -maxdepth 3 -type d -path '*/resources/app' | head -n 1)
-            if [ -z "$app_dir" ] || [ ! -f "$app_dir/package.json" ]; then
-              echo "ERROR: resources/app/package.json not found in $asset_name" >&2
-              exit 1
-            fi
-
-            out_archive="/tmp/code-oss-out/${logical}"
-            tar -C "$app_dir" -cf - . | zstd -q -9 -T0 -o "$out_archive"
-            debloated_bytes=$(stat -c%s "$out_archive")
-            sha=$(sha256sum "$out_archive" | awk '{print $1}')
-            cp "$out_archive" "/tmp/code-oss-out/${sha}"
-            rm -rf "$work" "$in_file"
-
-            saved=$((raw_bytes - debloated_bytes))
-            pct=$(node -e "console.log(((($raw_bytes - $debloated_bytes) / $raw_bytes) * 100).toFixed(1))")
-            echo "    $logical: $raw_bytes B (full VSCodium) -> $debloated_bytes B (app-only zst) | saved=$saved B (${pct}%) | sha256=${sha:0:12}..."
-
-            node -e "
-              const fs = require('fs');
-              fs.writeFileSync('/tmp/code-oss-out/${logical}.meta.json', JSON.stringify({
-                filename: '${logical}',
-                sha256: '${sha}',
-                bytes: ${debloated_bytes},
-                raw_bytes: ${raw_bytes},
-                version: '${VER}',
-                category: 'code-oss-upstream',
-                download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/${sha}'
-              }, null, 2));
-            "
-          done < <(node -e "
-            const d = JSON.parse(require('fs').readFileSync('/tmp/code-oss-in/targets.json', 'utf8'));
-            for (const t of d.targets) {
-              console.log([t.key, t.logical, t.ext, t.name, t.url].join('\t'));
-            }
-          ")
-
-          # Upload SHA-256 blobs into canonical cas-v1
-          BLOBS=$(find /tmp/code-oss-out -maxdepth 1 -type f -regextype posix-extended -regex '.*/[a-f0-9]{64}')
-          gh release upload cas-v1 $BLOBS --repo awesome-os/b8g-ghost --clobber
-
-          # Merge into manifests/index.json with Keep-Last-5 history
           node -e "
             const fs = require('fs');
             const path = require('path');
             const idx = JSON.parse(fs.readFileSync('manifests/index.json', 'utf8'));
-            for (const f of fs.readdirSync('/tmp/code-oss-out').filter(x => x.endsWith('.meta.json')).sort()) {
-              const m = JSON.parse(fs.readFileSync(path.join('/tmp/code-oss-out', f), 'utf8'));
+            for (const f of fs.readdirSync('/tmp/code-oss-meta').filter(x => x.endsWith('.meta.json')).sort()) {
+              const m = JSON.parse(fs.readFileSync(path.join('/tmp/code-oss-meta', f), 'utf8'));
               const prev = idx.entries[m.filename];
               const history = Array.isArray(prev?.history) ? [...prev.history] : [];
               if (prev && prev.sha256 && prev.sha256 !== m.sha256) {
@@ -164,7 +162,6 @@ jobs:
                 filename: m.filename,
                 sha256: m.sha256,
                 bytes: m.bytes,
-                raw_bytes: m.raw_bytes,
                 version: m.version,
                 category: m.category,
                 download_url: m.download_url,
@@ -179,10 +176,8 @@ jobs:
             fs.writeFileSync('manifests/index.json', JSON.stringify(idx, null, 2) + '\n');
             console.log('[code-oss-cas] Updated manifests/index.json -> total_entries=' + idx.total_entries);
           "
-
-      - name: Commit Updated manifests/index.json to Git
-        run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
           git add manifests/index.json
-          git diff --cached --quiet || (git commit -m "feat(cas-v1): ingest debloated rolling-latest Code - OSS (VSCodium) into canonical Ghost CAS" && git push origin main)
+          git diff --cached --quiet || (git commit -m "feat(cas-v1): publish Awesome-OS Code - OSS ${{ needs.resolve-version.outputs.tag }} (built from microsoft/vscode MIT)" && git push origin main)
