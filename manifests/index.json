@@ -2,8 +2,8 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T05:21:18.708Z",
-  "total_entries": 145,
+  "updated_at": "2026-11-24T05:29:41.814Z",
+  "total_entries": 147,
   "entries": {
     "01-browser-split-shell.exe": {
       "filename": "01-browser-split-shell.exe",
@@ -158,6 +158,24 @@
       "bytes": 29696,
       "category": "baseline",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4e916c764be73cbaf50f04c518c74b05451efe91d1d9c6804207702b5f7b5748"
+    },
+    "blender-linux-x64.tar.zst": {
+      "filename": "blender-linux-x64.tar.zst",
+      "sha256": "092e8d08b534af1db18bdcb3190e7ea9c3b86f681a4c70a02fe297c08dec7a13",
+      "bytes": 447808801,
+      "raw_bytes": 406944100,
+      "version": "5.3.0",
+      "category": "blender-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/092e8d08b534af1db18bdcb3190e7ea9c3b86f681a4c70a02fe297c08dec7a13"
+    },
+    "blender-win64.tar.zst": {
+      "filename": "blender-win64.tar.zst",
+      "sha256": "f5b4180f8c50ada84848e07c572eb6183f1b0043aa66d9a3d66856b3fb849e42",
+      "bytes": 352279253,
+      "raw_bytes": 425299259,
+      "version": "5.3.0",
+      "category": "blender-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f5b4180f8c50ada84848e07c572eb6183f1b0043aa66d9a3d66856b3fb849e42"
     },
     "boringssl-include-289645a.tar.gz": {
       "filename": "boringssl-include-289645a.tar.gz",
