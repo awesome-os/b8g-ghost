@@ -58,7 +58,12 @@ export function platformLibFilename(
   platform: NodeJS.Platform = process.platform,
   arch: string = process.arch
 ): string {
-  if (baseName.endsWith('.dll') || baseName.endsWith('.so') || baseName.endsWith('.dylib')) {
+  if (
+    baseName.endsWith('.dll') ||
+    baseName.endsWith('.so') ||
+    baseName.endsWith('.dylib') ||
+    baseName.endsWith('.wasm')
+  ) {
     return baseName;
   }
   if (platform === 'win32') return `${baseName}.dll`;
@@ -173,4 +178,96 @@ export async function ghostFFI<T extends Record<string, GhostFFISymbolDef>>(
       isDisposed = true;
     },
   };
+}
+
+export const DEFAULT_GHOST_INDEX_URL =
+  'https://raw.githubusercontent.com/awesome-os/sectium-browser/main/manifests/ghost-index.json';
+
+export interface UnifiedGhostIndexDoc {
+  readonly schema: string;
+  readonly baseline_tag: string;
+  readonly entries: Record<
+    string,
+    {
+      readonly filename: string;
+      readonly sha256: string;
+      readonly download_url: string;
+      readonly category?: string;
+    }
+  >;
+}
+
+/**
+ * Resolves a human-readable library or toolchain name (e.g. "libbrotli", "libsectium_display", "libsqlite3")
+ * against the unified cross-repo `ghost-index.json`, trying native OS/arch first and falling back to `wasm32-wasi`.
+ */
+export async function resolveFromGhostIndex(
+  baseName: string,
+  opts?: {
+    readonly index?: UnifiedGhostIndexDoc;
+    readonly indexUrl?: string;
+    readonly platform?: NodeJS.Platform;
+    readonly arch?: string;
+    readonly fetcher?: (url: string) => Promise<Uint8Array>;
+  }
+): Promise<{ filename: string; sha256: string; downloadUrl: string; baselineTag: string }> {
+  let doc = opts?.index;
+  if (!doc) {
+    const url = opts?.indexUrl ?? DEFAULT_GHOST_INDEX_URL;
+    const raw = await (opts?.fetcher ?? defaultFetchBytes)(url);
+    doc = JSON.parse(new TextDecoder().decode(raw)) as UnifiedGhostIndexDoc;
+  }
+
+  const plat = opts?.platform ?? process.platform;
+  const arch = opts?.arch ?? process.arch;
+  const archTag = arch === 'arm64' ? 'arm64' : 'x64';
+  const candidates: string[] = [baseName];
+  if (plat === 'win32') {
+    candidates.push(`${baseName}-win64.dll`, `${baseName}.dll`);
+  } else if (plat === 'darwin') {
+    candidates.push(`${baseName}-macos-${archTag}.dylib`, `${baseName}.dylib`);
+  } else {
+    candidates.push(`${baseName}-linux-${archTag}.so`, `${baseName}.so`);
+  }
+  candidates.push(`${baseName}-wasm32-wasi.wasm`, `${baseName}.wasm`);
+
+  for (const cand of candidates) {
+    const hit = doc.entries[cand];
+    if (hit) {
+      return {
+        filename: hit.filename,
+        sha256: hit.sha256,
+        downloadUrl: hit.download_url,
+        baselineTag: doc.baseline_tag,
+      };
+    }
+  }
+  throw new Error(`Ghost index has no matching entry for "${baseName}" (tried: ${candidates.join(', ')})`);
+}
+
+/**
+ * Zero-config magical Ghost FFI: resolves library name + current OS/arch (or wasm32-wasi fallback)
+ * from the unified `ghost-index.json`, hydrates into Machine CAS with SHA-256 verification, and binds symbols.
+ */
+export async function ghostFFIByName<T extends Record<string, GhostFFISymbolDef>>(
+  baseName: string,
+  opts: {
+    readonly symbols: T;
+    readonly index?: UnifiedGhostIndexDoc;
+    readonly indexUrl?: string;
+    readonly casDir?: string;
+    readonly platform?: NodeJS.Platform;
+    readonly arch?: string;
+    readonly fetcher?: (url: string) => Promise<Uint8Array>;
+  }
+): Promise<GhostFFIHandle<T>> {
+  const entry = await resolveFromGhostIndex(baseName, opts);
+  return ghostFFI(`ghost-index@${entry.baselineTag}`, {
+    lib: entry.filename,
+    sha256: entry.sha256,
+    downloadUrl: entry.downloadUrl,
+    casDir: opts.casDir,
+    fetcher: opts.fetcher,
+    symbols: opts.symbols,
+  });
 }

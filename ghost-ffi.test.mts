@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import test from 'node:test';
-import { ghostFFI, sha256Buffer } from './ghost-ffi.mts';
+import { ghostFFI, ghostFFIByName, sha256Buffer } from './ghost-ffi.mts';
 
 test('ghostFFI hydrates cold CAS, hits warm CAS, supports side-by-side versions, and disposes cleanly', async () => {
   const casDir = mkdtempSync(join(tmpdir(), 'b8g-ghost-ffi-'));
@@ -85,6 +85,61 @@ test('ghostFFI rejects tampered binaries on SHA-256 mismatch', async () => {
         }),
       /Ghost SHA-256 mismatch/
     );
+  } finally {
+    rmSync(casDir, { recursive: true, force: true });
+  }
+});
+
+test('ghostFFIByName auto-resolves native OS or wasm32-wasi fallback from unified ghost-index.json', async () => {
+  const casDir = mkdtempSync(join(tmpdir(), 'b8g-ghost-idx-'));
+  try {
+    const winBytes = new TextEncoder().encode('brotli-win64-dll-bytes');
+    const wasiBytes = new TextEncoder().encode('sqlite-wasi-wasm-bytes');
+    const winHash = sha256Buffer(winBytes);
+    const wasiHash = sha256Buffer(wasiBytes);
+
+    const mockIndex = {
+      schema: 'b8g-ghost-unified-index-v1',
+      baseline_tag: 'v0.7.0-baseline',
+      entries: {
+        'libbrotli-win64.dll': {
+          filename: 'libbrotli-win64.dll',
+          sha256: winHash,
+          download_url: 'https://github.com/awesome-os/upstream-mirrors/releases/download/v0.2.0-holo-5os/libbrotli-win64.dll',
+        },
+        'libsqlite3-wasm32-wasi.wasm': {
+          filename: 'libsqlite3-wasm32-wasi.wasm',
+          sha256: wasiHash,
+          download_url: 'https://github.com/awesome-os/upstream-mirrors/releases/download/v0.2.0-holo-5os/libsqlite3-wasm32-wasi.wasm',
+        },
+      },
+    };
+
+    const fetcher = async (url: string): Promise<Uint8Array> =>
+      url.endsWith('.wasm') ? wasiBytes : winBytes;
+
+    // 1. Native Win64 match
+    const brotli = await ghostFFIByName('libbrotli', {
+      index: mockIndex,
+      platform: 'win32',
+      casDir,
+      fetcher,
+      symbols: { BrotliDecoderVersion: { args: [], returns: 'u32' } },
+    });
+    assert.equal(brotli.sha256, winHash);
+    assert.equal(brotli.casHit, false);
+
+    // 2. Automatic wasm32-wasi fallback when native OS binary isn't in index
+    const sqlite = await ghostFFIByName('libsqlite3', {
+      index: mockIndex,
+      platform: 'linux',
+      arch: 'arm64',
+      casDir,
+      fetcher,
+      symbols: { sqlite3_libversion_number: { args: [], returns: 'i32' } },
+    });
+    assert.equal(sqlite.sha256, wasiHash);
+    assert.ok(sqlite.resolvedPath.endsWith('libsqlite3-wasm32-wasi.wasm'));
   } finally {
     rmSync(casDir, { recursive: true, force: true });
   }
