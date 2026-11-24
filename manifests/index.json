@@ -2,7 +2,7 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T04:13:18.352Z",
+  "updated_at": "2026-11-24T04:19:51.673Z",
   "total_entries": 142,
   "entries": {
     "01-browser-split-shell.exe": {
@@ -203,21 +203,35 @@
     },
     "code-oss-app-linux-x64.tar.zst": {
       "filename": "code-oss-app-linux-x64.tar.zst",
-      "sha256": "918b1dce71d7ec1e434bcf052a27051324bb64dd5eeed26e0c4f1ed45d0dc3cc",
-      "bytes": 62326376,
-      "raw_bytes": 214776735,
-      "version": "1.143.17232",
+      "sha256": "f2f391384268e6736743495e38041f3e3517e667ee0b05e8e3d36c98708ae966",
+      "bytes": 205287699,
+      "version": "1.147.0",
       "category": "code-oss-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/918b1dce71d7ec1e434bcf052a27051324bb64dd5eeed26e0c4f1ed45d0dc3cc"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f2f391384268e6736743495e38041f3e3517e667ee0b05e8e3d36c98708ae966",
+      "history": [
+        {
+          "sha256": "918b1dce71d7ec1e434bcf052a27051324bb64dd5eeed26e0c4f1ed45d0dc3cc",
+          "bytes": 62326376,
+          "version": "1.143.17232",
+          "retired_at": "2026-11-24T04:19:51.671Z"
+        }
+      ]
     },
     "code-oss-app-win64.tar.zst": {
       "filename": "code-oss-app-win64.tar.zst",
-      "sha256": "cdb4c9743ac852246c771a672f59364946082c00f2aba39e3f2c107463e59384",
-      "bytes": 61379829,
-      "raw_bytes": 231406156,
-      "version": "1.143.17232",
+      "sha256": "453eda956e8e0477b6a6a7508007f14fe035d6d9e73231abeae75736831382c0",
+      "bytes": 194996453,
+      "version": "1.147.0",
       "category": "code-oss-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/cdb4c9743ac852246c771a672f59364946082c00f2aba39e3f2c107463e59384"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/453eda956e8e0477b6a6a7508007f14fe035d6d9e73231abeae75736831382c0",
+      "history": [
+        {
+          "sha256": "cdb4c9743ac852246c771a672f59364946082c00f2aba39e3f2c107463e59384",
+          "bytes": 61379829,
+          "version": "1.143.17232",
+          "retired_at": "2026-11-24T04:19:51.673Z"
+        }
+      ]
     },
     "code-oss.exe": {
       "filename": "code-oss.exe",
