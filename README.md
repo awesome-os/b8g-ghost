@@ -81,3 +81,13 @@ node --test ghost-ffi.test.mts
 ## License
 
 BSD-3-Clause — Awesome-OS Contributors.
+
+## Quick Install & Run (Windows / Linux / macOS)
+
+```sh
+# Download latest release assets (all platforms)
+gh release download -R awesome-os/b8g-ghost --dir ./b8g-ghost-release
+
+# Or clone source directly (all platforms)
+git clone https://github.com/awesome-os/b8g-ghost.git && cd b8g-ghost
+```
