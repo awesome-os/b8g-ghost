@@ -2,8 +2,8 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T07:31:32.321Z",
-  "total_entries": 154,
+  "updated_at": "2026-11-24T07:37:38.475Z",
+  "total_entries": 156,
   "entries": {
     "01-browser-split-shell.exe": {
       "filename": "01-browser-split-shell.exe",
@@ -581,6 +581,24 @@
       "bytes": 24064,
       "category": "baseline",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/fd49e165293174e774f3bb936213c3d7ffda9eaeb7514f8c2d22360ecac4b854"
+    },
+    "godot-linux-x64.tar.zst": {
+      "filename": "godot-linux-x64.tar.zst",
+      "sha256": "f315c8cb65ae9aed548d273ed10103bd41a7a2f86b175f7359f3d5044a4de5b5",
+      "bytes": 71967259,
+      "raw_bytes": 77860424,
+      "version": "4.7.2-stable",
+      "category": "godot-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f315c8cb65ae9aed548d273ed10103bd41a7a2f86b175f7359f3d5044a4de5b5"
+    },
+    "godot-win64.tar.zst": {
+      "filename": "godot-win64.tar.zst",
+      "sha256": "a8c072902625749009f803ce71c3be69341f4caa62722a626fc0454c6bf25952",
+      "bytes": 79156035,
+      "raw_bytes": 86013866,
+      "version": "4.7.2-stable",
+      "category": "godot-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/a8c072902625749009f803ce71c3be69341f4caa62722a626fc0454c6bf25952"
     },
     "harfbuzz-include-ce0a123.tar.gz": {
       "filename": "harfbuzz-include-ce0a123.tar.gz",
