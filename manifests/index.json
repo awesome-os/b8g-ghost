@@ -2,7 +2,7 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T19:51:20.835Z",
+  "updated_at": "2026-11-24T20:27:48.406Z",
   "total_entries": 156,
   "entries": {
     "01-browser-split-shell.exe": {
@@ -1312,12 +1312,20 @@
     },
     "obs-win64.tar.zst": {
       "filename": "obs-win64.tar.zst",
-      "sha256": "aac72a44e588423802083c2ad5bc2df0a3cbbe6aa0f52a2e9493fbd00c857d3c",
-      "bytes": 191390502,
+      "sha256": "a9f7df4f232f39d03404074315daddb5a525f8a96724f8a4b49a4d181a001495",
+      "bytes": 191390506,
       "raw_bytes": 235774237,
       "version": "33.0.3",
       "category": "obs-upstream",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/aac72a44e588423802083c2ad5bc2df0a3cbbe6aa0f52a2e9493fbd00c857d3c"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/a9f7df4f232f39d03404074315daddb5a525f8a96724f8a4b49a4d181a001495",
+      "history": [
+        {
+          "sha256": "aac72a44e588423802083c2ad5bc2df0a3cbbe6aa0f52a2e9493fbd00c857d3c",
+          "bytes": 191390502,
+          "version": "33.0.3",
+          "retired_at": "2026-11-24T20:27:48.405Z"
+        }
+      ]
     },
     "orjson-3.13.0.ghost.tar.gz": {
       "filename": "orjson-3.13.0.ghost.tar.gz",
