@@ -2,8 +2,8 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T06:40:33.050Z",
-  "total_entries": 150,
+  "updated_at": "2026-11-24T07:31:14.478Z",
+  "total_entries": 152,
   "entries": {
     "01-browser-split-shell.exe": {
       "filename": "01-browser-split-shell.exe",
@@ -1120,6 +1120,24 @@
       "bytes": 5071851,
       "category": "pypi-llm-stack",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/bf0bf957e29f49d1c312f3555c90cef01f71f2867e55921242c0f89a1046bd17"
+    },
+    "pwsh-linux-x64.tar.zst": {
+      "filename": "pwsh-linux-x64.tar.zst",
+      "sha256": "cb331255068d8d9285a62d4b3e4e06ff9220aebd3cb055d3ac3f8e3a6b7f9249",
+      "bytes": 70175621,
+      "raw_bytes": 76881682,
+      "version": "v7.7.0",
+      "category": "powershell-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/cb331255068d8d9285a62d4b3e4e06ff9220aebd3cb055d3ac3f8e3a6b7f9249"
+    },
+    "pwsh-win64.tar.zst": {
+      "filename": "pwsh-win64.tar.zst",
+      "sha256": "b5a5d0e0727e39fdd7e41606495e54e473351c34177320a42667653a9c0fcef7",
+      "bytes": 101048487,
+      "raw_bytes": 115330228,
+      "version": "v7.7.0",
+      "category": "powershell-upstream",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/b5a5d0e0727e39fdd7e41606495e54e473351c34177320a42667653a9c0fcef7"
     },
     "pydantic-core-2.50.5.ghost.tar.gz": {
       "filename": "pydantic-core-2.50.5.ghost.tar.gz",
