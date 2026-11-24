@@ -2,8 +2,8 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T02:36:34.650Z",
-  "total_entries": 107,
+  "updated_at": "2026-11-24T02:42:19.120Z",
+  "total_entries": 123,
   "entries": {
     "01-browser-split-shell.exe": {
       "filename": "01-browser-split-shell.exe",
@@ -245,10 +245,13 @@
     },
     "ghost-5os-manifest.json": {
       "filename": "ghost-5os-manifest.json",
-      "sha256": "6bf095c2b66ff3901a8dab60b95106b65bef8c3f06cb5fbb6d1fcc6421dbb6c4",
-      "bytes": 5703,
+      "sha256": "aaa6fd6360d8f3714a529fb76f6b4812557ab9cb13acbb4346a6f8385aba0b0e",
+      "bytes": 9756,
       "category": "holo-5os",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/6bf095c2b66ff3901a8dab60b95106b65bef8c3f06cb5fbb6d1fcc6421dbb6c4"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/aaa6fd6360d8f3714a529fb76f6b4812557ab9cb13acbb4346a6f8385aba0b0e",
+      "history": [
+        "6bf095c2b66ff3901a8dab60b95106b65bef8c3f06cb5fbb6d1fcc6421dbb6c4"
+      ]
     },
     "ghost-llvm-23.1.6-full-linux-x64.tar.zst": {
       "filename": "ghost-llvm-23.1.6-full-linux-x64.tar.zst",
@@ -385,10 +388,13 @@
     },
     "libbrotli-macos-arm64.dylib": {
       "filename": "libbrotli-macos-arm64.dylib",
-      "sha256": "470c1426e775197b4bc95b85751a82fd196d5e436dd9b550fe0509cd48b664b2",
+      "sha256": "d0e879b8bc18fe8f1ff8c7b0787a608404b75de8c293ff37d027ecfb7f06d276",
       "bytes": 939864,
       "category": "holo-5os",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/470c1426e775197b4bc95b85751a82fd196d5e436dd9b550fe0509cd48b664b2"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/d0e879b8bc18fe8f1ff8c7b0787a608404b75de8c293ff37d027ecfb7f06d276",
+      "history": [
+        "470c1426e775197b4bc95b85751a82fd196d5e436dd9b550fe0509cd48b664b2"
+      ]
     },
     "libbrotli-wasm32-wasi.wasm": {
       "filename": "libbrotli-wasm32-wasi.wasm",
@@ -420,10 +426,13 @@
     },
     "libexpat-macos-arm64.dylib": {
       "filename": "libexpat-macos-arm64.dylib",
-      "sha256": "16cec3b4ae96526e3fb7d4e38124e0b1836df17c914707f1ce462b283eddddee",
+      "sha256": "4334a243f3cced07cb40a2a124a573b18c146985cb39e6f396b51fb0257b9daf",
       "bytes": 223096,
       "category": "holo-5os",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/16cec3b4ae96526e3fb7d4e38124e0b1836df17c914707f1ce462b283eddddee"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4334a243f3cced07cb40a2a124a573b18c146985cb39e6f396b51fb0257b9daf",
+      "history": [
+        "16cec3b4ae96526e3fb7d4e38124e0b1836df17c914707f1ce462b283eddddee"
+      ]
     },
     "libexpat-wasm32-wasi.wasm": {
       "filename": "libexpat-wasm32-wasi.wasm",
@@ -452,6 +461,111 @@
       "bytes": 676061,
       "category": "chromium-shard",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8e4d0448e7079d17369bc8a7aaccb6ce381a43b42e9ecf954ea5427229aa103e"
+    },
+    "liblz4-linux-arm64.so": {
+      "filename": "liblz4-linux-arm64.so",
+      "sha256": "db10dced8969c1a1e8de315e638567bdbe3f06d008f371d6e69d12a761ea483a",
+      "bytes": 158336,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/db10dced8969c1a1e8de315e638567bdbe3f06d008f371d6e69d12a761ea483a"
+    },
+    "liblz4-linux-x64.so": {
+      "filename": "liblz4-linux-x64.so",
+      "sha256": "e9febc5ea4d7fe1e052fdc81ec58934ed34dade1d36e7f72d14df772c795afec",
+      "bytes": 179328,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/e9febc5ea4d7fe1e052fdc81ec58934ed34dade1d36e7f72d14df772c795afec"
+    },
+    "liblz4-macos-arm64.dylib": {
+      "filename": "liblz4-macos-arm64.dylib",
+      "sha256": "175a8a39ed41cc2a19f4462096b0fd3955abe30d4761a6fa382363120622a372",
+      "bytes": 219992,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/175a8a39ed41cc2a19f4462096b0fd3955abe30d4761a6fa382363120622a372"
+    },
+    "liblz4-wasm32-wasi.wasm": {
+      "filename": "liblz4-wasm32-wasi.wasm",
+      "sha256": "74793cdb711362571d5ac174ce9adefc3e98210378eef12996a136f8ade958ea",
+      "bytes": 497613,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/74793cdb711362571d5ac174ce9adefc3e98210378eef12996a136f8ade958ea"
+    },
+    "liblz4-win64.dll": {
+      "filename": "liblz4-win64.dll",
+      "sha256": "04e6cd7c624179878d60955d23da690e8f12fdbe77e5d1fe4719a641b95461f5",
+      "bytes": 185856,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/04e6cd7c624179878d60955d23da690e8f12fdbe77e5d1fe4719a641b95461f5"
+    },
+    "libmd4c-linux-arm64.so": {
+      "filename": "libmd4c-linux-arm64.so",
+      "sha256": "729c86f55d0f86371631c3f651132eb925d762ea2c04717c309af413acb0dd22",
+      "bytes": 190048,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/729c86f55d0f86371631c3f651132eb925d762ea2c04717c309af413acb0dd22"
+    },
+    "libmd4c-linux-x64.so": {
+      "filename": "libmd4c-linux-x64.so",
+      "sha256": "60940e6c35bdddbf505302e7132115d9942b7d69b48791528401a8816eeaca33",
+      "bytes": 196936,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/60940e6c35bdddbf505302e7132115d9942b7d69b48791528401a8816eeaca33"
+    },
+    "libmd4c-macos-arm64.dylib": {
+      "filename": "libmd4c-macos-arm64.dylib",
+      "sha256": "59dce4774c93e867d840b9c861b970a2071219b4c595bc8ae1b4a0a11b5ae60b",
+      "bytes": 190584,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/59dce4774c93e867d840b9c861b970a2071219b4c595bc8ae1b4a0a11b5ae60b"
+    },
+    "libmd4c-wasm32-wasi.wasm": {
+      "filename": "libmd4c-wasm32-wasi.wasm",
+      "sha256": "84e13cc95509cb43623566cda900a1454b48e71a085afb896db16e6f71d1338f",
+      "bytes": 886827,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/84e13cc95509cb43623566cda900a1454b48e71a085afb896db16e6f71d1338f"
+    },
+    "libmd4c-win64.dll": {
+      "filename": "libmd4c-win64.dll",
+      "sha256": "a5b09bd346867afb693569ec4858dccdc398f844a5ad7bb7760a4617303a4ff7",
+      "bytes": 163840,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/a5b09bd346867afb693569ec4858dccdc398f844a5ad7bb7760a4617303a4ff7"
+    },
+    "libpicohttp-linux-arm64.so": {
+      "filename": "libpicohttp-linux-arm64.so",
+      "sha256": "4584fdde12f73cb0530fe0b4245f7faef75058ce4aea760398df65ebf2e7f5e9",
+      "bytes": 6968,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4584fdde12f73cb0530fe0b4245f7faef75058ce4aea760398df65ebf2e7f5e9"
+    },
+    "libpicohttp-linux-x64.so": {
+      "filename": "libpicohttp-linux-x64.so",
+      "sha256": "d34f266127a77f4cfcd2f0fe50e5772ea949f60cb147a79f474908786ce9d6d1",
+      "bytes": 6920,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/d34f266127a77f4cfcd2f0fe50e5772ea949f60cb147a79f474908786ce9d6d1"
+    },
+    "libpicohttp-macos-arm64.dylib": {
+      "filename": "libpicohttp-macos-arm64.dylib",
+      "sha256": "d44fe410dc012057f98f6281c046d4870e679d4e1c76646105e08ebcbb9fe16e",
+      "bytes": 50848,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/d44fe410dc012057f98f6281c046d4870e679d4e1c76646105e08ebcbb9fe16e"
+    },
+    "libpicohttp-wasm32-wasi.wasm": {
+      "filename": "libpicohttp-wasm32-wasi.wasm",
+      "sha256": "7d00e100ff23357491d05816cd68395e4a635532298d869b73394ba10f48e7fb",
+      "bytes": 12891,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/7d00e100ff23357491d05816cd68395e4a635532298d869b73394ba10f48e7fb"
+    },
+    "libpicohttp-win64.dll": {
+      "filename": "libpicohttp-win64.dll",
+      "sha256": "1c951064dfca61e94cc93bec76d2233108dd9775aa8b9e9b8c6b84a7c2b4df6b",
+      "bytes": 23552,
+      "category": "holo-5os",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/1c951064dfca61e94cc93bec76d2233108dd9775aa8b9e9b8c6b84a7c2b4df6b"
     },
     "libpng-include-73a6865.tar.gz": {
       "filename": "libpng-include-73a6865.tar.gz",
@@ -525,10 +639,13 @@
     },
     "libsqlite3-macos-arm64.dylib": {
       "filename": "libsqlite3-macos-arm64.dylib",
-      "sha256": "e727134d10432d7e9db80616c90a71920b13477c4bb27b631b17f8d14ab20f30",
+      "sha256": "4ebe9d69a2f0df077cb78ce6e969db9b51e275f96ca88bee05837a59cdc81308",
       "bytes": 1589648,
       "category": "holo-5os",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/e727134d10432d7e9db80616c90a71920b13477c4bb27b631b17f8d14ab20f30"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4ebe9d69a2f0df077cb78ce6e969db9b51e275f96ca88bee05837a59cdc81308",
+      "history": [
+        "e727134d10432d7e9db80616c90a71920b13477c4bb27b631b17f8d14ab20f30"
+      ]
     },
     "libsqlite3-wasm32-wasi.wasm": {
       "filename": "libsqlite3-wasm32-wasi.wasm",
@@ -574,10 +691,13 @@
     },
     "libwebp-macos-arm64.dylib": {
       "filename": "libwebp-macos-arm64.dylib",
-      "sha256": "fcf6818f1d3854e0a4e4a366e96380d5de538ba81f397b5bd29cd8e48ddbc98a",
+      "sha256": "dcefc7dbbc90ef02276090a53cff1a9fa58204f1827380b20d38369d4202ca36",
       "bytes": 603448,
       "category": "holo-5os",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/fcf6818f1d3854e0a4e4a366e96380d5de538ba81f397b5bd29cd8e48ddbc98a"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/dcefc7dbbc90ef02276090a53cff1a9fa58204f1827380b20d38369d4202ca36",
+      "history": [
+        "fcf6818f1d3854e0a4e4a366e96380d5de538ba81f397b5bd29cd8e48ddbc98a"
+      ]
     },
     "libwebp-shared-linux-x64.tar.gz": {
       "filename": "libwebp-shared-linux-x64.tar.gz",
@@ -719,6 +839,13 @@
       "category": "baseline",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/39b0d6a4493285b6928b7f131d52adffd5973c32c0c57ff4d41d8dce4986dd95"
     },
+    "v8-shared-macos-arm64.tar.gz": {
+      "filename": "v8-shared-macos-arm64.tar.gz",
+      "sha256": "db54ec797f28f4d5a93c54a28291edf9723eeb8c8e9013e0954e3691ecf99e5a",
+      "bytes": 16420455,
+      "category": "v8-cloud",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/db54ec797f28f4d5a93c54a28291edf9723eeb8c8e9013e0954e3691ecf99e5a"
+    },
     "v8-shared-win64.b8p": {
       "filename": "v8-shared-win64.b8p",
       "sha256": "8027458c5b7f730e47bbfff581e6454f2c54e598be80fc51c171e5df20b5b554",
@@ -754,6 +881,5 @@
       "category": "chromium-shard",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4e5454ca4168b5d0f2e4746f1ea9a419e21874a6015f5e3c1a7c28892f6dc5d1"
     }
-  },
-  "retention_policy": "rolling-latest-keep-last-5"
+  }
 }
