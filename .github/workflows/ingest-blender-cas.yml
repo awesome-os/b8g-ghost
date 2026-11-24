@@ -1,0 +1,249 @@
+name: Ingest Debloated Rolling-Latest Upstream Blender into Canonical Ghost CAS (cas-v1)
+
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+    inputs:
+      blender_version:
+        description: 'Optional explicit Blender version override e.g. 4.3.2 (blank = latest stable)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  ingest-blender:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install zstd, unzip, and xz-utils
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq zstd unzip xz-utils
+
+      - name: Download, Debloat & Upload Rolling-Latest Blender -> cas-v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_VERSION: ${{ inputs.blender_version }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/blender-in /tmp/blender-out
+
+          node -e '
+            const fs = require("fs");
+            const inputVer = (process.env.INPUT_VERSION || "").trim();
+            const baseUrl = "https://download.blender.org/release/";
+
+            async function fetchText(url) {
+              const res = await fetch(url, { headers: { "User-Agent": "b8g-ghost" } });
+              if (!res.ok) throw new Error("HTTP " + res.status + " for " + url);
+              return await res.text();
+            }
+
+            (async () => {
+              let dirs = [];
+              if (inputVer) {
+                const m = inputVer.match(/^(\d+)\.(\d+)\.(\d+)$/);
+                if (!m) throw new Error("Invalid blender_version override: " + inputVer);
+                dirs = [{ dir: `Blender${m[1]}.${m[2]}/`, maj: +m[1], min: +m[2] }];
+              } else {
+                const rootHtml = await fetchText(baseUrl);
+                const seen = new Set();
+                for (const m of rootHtml.matchAll(/href="(Blender(\d+)\.(\d+)\/)"/g)) {
+                  if (seen.has(m[1])) continue;
+                  seen.add(m[1]);
+                  dirs.push({ dir: m[1], maj: +m[2], min: +m[3] });
+                }
+                dirs.sort((a, b) => (b.maj - a.maj) || (b.min - a.min));
+              }
+
+              let picked = null;
+              for (const d of dirs) {
+                const dirUrl = baseUrl + d.dir;
+                const html = await fetchText(dirUrl);
+                const winMap = new Map();
+                const linMap = new Map();
+
+                for (const m of html.matchAll(/href="(blender-(\d+\.\d+\.\d+)-windows-x64\.zip)"/g)) {
+                  winMap.set(m[2], m[1]);
+                }
+                for (const m of html.matchAll(/href="(blender-(\d+\.\d+\.\d+)-linux-x64\.tar\.xz)"/g)) {
+                  linMap.set(m[2], m[1]);
+                }
+
+                const common = [...winMap.keys()].filter((v) => linMap.has(v));
+                if (inputVer && !common.includes(inputVer)) {
+                  throw new Error(`Requested version ${inputVer} missing win64 or linux-x64 in ${dirUrl}`);
+                }
+                if (common.length === 0) continue;
+
+                common.sort((a, b) => {
+                  const pa = a.split(".").map(Number);
+                  const pb = b.split(".").map(Number);
+                  return (pb[0] - pa[0]) || (pb[1] - pa[1]) || (pb[2] - pa[2]);
+                });
+
+                const ver = inputVer || common[0];
+                picked = {
+                  version: ver,
+                  dir: d.dir,
+                  win: { name: winMap.get(ver), url: dirUrl + winMap.get(ver) },
+                  lin: { name: linMap.get(ver), url: dirUrl + linMap.get(ver) }
+                };
+                break;
+              }
+
+              if (!picked) {
+                throw new Error("No stable Blender release with both windows-x64.zip and linux-x64.tar.xz found");
+              }
+
+              fs.writeFileSync("/tmp/blender-in/resolved.json", JSON.stringify(picked, null, 2));
+              console.log(">>> Resolved Blender release:", picked.version, "from", picked.dir);
+              console.log("    win64 :", picked.win.name, "->", picked.win.url);
+              console.log("    linux :", picked.lin.name, "->", picked.lin.url);
+            })().catch((err) => { console.error(err); process.exit(1); });
+          '
+
+          VER=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/blender-in/resolved.json','utf8')).version)")
+          WIN_URL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/blender-in/resolved.json','utf8')).win.url)")
+          WIN_NAME=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/blender-in/resolved.json','utf8')).win.name)")
+          LIN_URL=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/blender-in/resolved.json','utf8')).lin.url)")
+          LIN_NAME=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/blender-in/resolved.json','utf8')).lin.name)")
+
+          process_target() {
+            local target_id="$1"
+            local logical="$2"
+            local archive_name="$3"
+            local url="$4"
+            local bin_name="$5"
+
+            echo ">>> Fetching $url"
+            curl -fsSL "$url" -o "/tmp/blender-in/${archive_name}"
+            local raw_bytes
+            raw_bytes=$(stat -c%s "/tmp/blender-in/${archive_name}")
+
+            local work="/tmp/blender-in/work-${target_id}"
+            rm -rf "$work" && mkdir -p "$work"
+            if [[ "$archive_name" == *.zip ]]; then
+              unzip -q "/tmp/blender-in/${archive_name}" -d "$work"
+            else
+              tar -xJf "/tmp/blender-in/${archive_name}" -C "$work"
+            fi
+
+            # Locate root directory containing blender.exe / blender so it sits at archive root
+            local bin_dir
+            bin_dir=$(find "$work" -maxdepth 3 -type f -name "$bin_name" -printf '%h\n' | head -n 1 || true)
+            if [ -z "$bin_dir" ] || [ ! -f "$bin_dir/$bin_name" ]; then
+              echo "ERROR: Could not locate $bin_name inside extracted $archive_name"
+              exit 1
+            fi
+
+            # Debloat: strip unused non-English datafiles/locale/* (keep en* and languages file)
+            while IFS= read -r locale_dir; do
+              [ -n "$locale_dir" ] || continue
+              find "$locale_dir" -mindepth 1 -maxdepth 1 ! -name 'en*' ! -name 'languages' -exec rm -rf {} + || true
+            done < <(find "$bin_dir" -type d -path '*/datafiles/locale')
+
+            # Strip *.pdb debug symbols if present
+            find "$bin_dir" -type f -iname '*.pdb' -delete || true
+
+            local out_archive="/tmp/blender-out/${logical}"
+            tar -C "$bin_dir" -cf - . | zstd -q -9 -T0 -o "$out_archive"
+            local debloated_bytes
+            debloated_bytes=$(stat -c%s "$out_archive")
+            local sha
+            sha=$(sha256sum "$out_archive" | awk '{print $1}')
+            cp "$out_archive" "/tmp/blender-out/${sha}"
+            rm -rf "$work" "/tmp/blender-in/${archive_name}"
+
+            local saved=$((raw_bytes - debloated_bytes))
+            echo "    $logical: $raw_bytes B (upstream) -> $debloated_bytes B (debloated zst) | saved=$saved B | sha256=${sha:0:12}..."
+
+            node -e "
+              const fs = require('fs');
+              fs.writeFileSync('/tmp/blender-out/${logical}.meta.json', JSON.stringify({
+                filename: '${logical}',
+                sha256: '${sha}',
+                bytes: ${debloated_bytes},
+                raw_bytes: ${raw_bytes},
+                version: '${VER}',
+                category: 'blender-upstream',
+                download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/${sha}'
+              }, null, 2));
+            "
+          }
+
+          process_target "win64" "blender-win64.tar.zst" "$WIN_NAME" "$WIN_URL" "blender.exe"
+          process_target "linux-x64" "blender-linux-x64.tar.zst" "$LIN_NAME" "$LIN_URL" "blender"
+
+          BLOBS=$(find /tmp/blender-out -maxdepth 1 -type f -regextype posix-extended -regex '.*/[a-f0-9]{64}')
+          gh release upload cas-v1 $BLOBS --repo awesome-os/b8g-ghost --clobber
+
+      - name: Commit Updated manifests/index.json to Git
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          merge_manifest() {
+            node -e "
+              const fs = require('fs');
+              const path = require('path');
+              const idx = JSON.parse(fs.readFileSync('manifests/index.json', 'utf8'));
+              for (const f of fs.readdirSync('/tmp/blender-out').filter(x => x.endsWith('.meta.json')).sort()) {
+                const m = JSON.parse(fs.readFileSync(path.join('/tmp/blender-out', f), 'utf8'));
+                const prev = idx.entries[m.filename];
+                const history = Array.isArray(prev?.history) ? [...prev.history] : [];
+                if (prev && prev.sha256 && prev.sha256 !== m.sha256) {
+                  history.unshift({
+                    sha256: prev.sha256,
+                    bytes: prev.bytes,
+                    version: prev.version || 'prev',
+                    retired_at: new Date().toISOString()
+                  });
+                }
+                idx.entries[m.filename] = {
+                  filename: m.filename,
+                  sha256: m.sha256,
+                  bytes: m.bytes,
+                  raw_bytes: m.raw_bytes,
+                  version: m.version,
+                  category: m.category,
+                  download_url: m.download_url,
+                  ...(history.length > 0 ? { history: history.slice(0, 5) } : {})
+                };
+              }
+              const sorted = {};
+              for (const k of Object.keys(idx.entries).sort()) sorted[k] = idx.entries[k];
+              idx.entries = sorted;
+              idx.total_entries = Object.keys(sorted).length;
+              idx.updated_at = new Date().toISOString();
+              fs.writeFileSync('manifests/index.json', JSON.stringify(idx, null, 2) + '\n');
+              console.log('[blender-cas] Updated manifests/index.json -> total_entries=' + idx.total_entries);
+            "
+          }
+
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            merge_manifest
+            git add manifests/index.json
+            if git diff --cached --quiet; then
+              echo "[blender-cas] No manifest changes to commit."
+              exit 0
+            fi
+            git commit -m "feat(cas-v1): roll debloated Blender into canonical Ghost CAS"
+            if git pull --rebase origin main && git push origin main; then
+              exit 0
+            fi
+            git rebase --abort || true
+            echo "[blender-cas] Push/rebase conflict on attempt $attempt, retrying..."
+            sleep 3
+          done
+          echo "ERROR: Failed to push manifests/index.json after 5 attempts"
+          exit 1

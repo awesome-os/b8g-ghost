@@ -1,0 +1,219 @@
+name: Ingest Debloated Rolling-Latest Upstream Qt6 Base into Canonical Ghost CAS (cas-v1)
+
+on:
+  schedule:
+    - cron: '0 10 * * 1'
+  workflow_dispatch:
+    inputs:
+      qt_version:
+        description: 'Optional explicit Qt 6.x.y version override (blank = latest Qt 6.*)'
+        required: false
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  ingest-qt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install zstd and aqtinstall
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq zstd
+          python3 -m pip install --quiet aqtinstall
+
+      - name: Download, Debloat & Upload Rolling-Latest Qt6 Base -> cas-v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+          INPUT_VERSION: ${{ inputs.qt_version }}
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/qt-linux /tmp/qt-win /tmp/qt-out
+
+          node -e '
+            const { execFileSync } = require("child_process");
+            const fs = require("fs");
+
+            const inputVer = (process.env.INPUT_VERSION || "").trim();
+            const runAqt = (args) => execFileSync("aqt", args, { encoding: "utf8" }).trim();
+
+            let candidates = [];
+            if (inputVer) {
+              candidates = [inputVer];
+            } else {
+              const out = runAqt(["list-qt", "linux", "desktop"]);
+              candidates = out
+                .split(/\s+/)
+                .filter((v) => /^6\.\d+\.\d+$/.test(v))
+                .sort((a, b) => {
+                  const pa = a.split(".").map(Number);
+                  const pb = b.split(".").map(Number);
+                  return (pb[0] - pa[0]) || (pb[1] - pa[1]) || (pb[2] - pa[2]);
+                });
+            }
+
+            let picked = null;
+            for (const ver of candidates) {
+              let linuxArches = [];
+              let winArches = [];
+              try {
+                linuxArches = runAqt(["list-qt", "linux", "desktop", "--arch", ver]).split(/\s+/).filter(Boolean);
+                winArches = runAqt(["list-qt", "windows", "desktop", "--arch", ver]).split(/\s+/).filter(Boolean);
+              } catch {
+                continue;
+              }
+
+              const linuxArch = ["linux_gcc_64", "gcc_64"].find((a) => linuxArches.includes(a));
+              const winArch =
+                ["win64_mingw", "win64_msvc2022_64", "win64_msvc2019_64", "win64_llvm_mingw"].find((a) => winArches.includes(a)) ||
+                winArches.find((a) => a.startsWith("win64_"));
+
+              if (linuxArch && winArch) {
+                picked = { version: ver, linux_arch: linuxArch, win_arch: winArch };
+                break;
+              }
+            }
+
+            if (!picked) {
+              throw new Error("Could not resolve Qt 6.* version with both Linux and Windows desktop architectures");
+            }
+
+            fs.writeFileSync("/tmp/qt-out/resolved.json", JSON.stringify(picked, null, 2));
+            console.log(">>> Resolved Qt6 release:", picked.version);
+            console.log("    linux_arch :", picked.linux_arch);
+            console.log("    win_arch   :", picked.win_arch);
+          '
+
+          VER=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/qt-out/resolved.json','utf8')).version)")
+          LINUX_ARCH=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/qt-out/resolved.json','utf8')).linux_arch)")
+          WIN_ARCH=$(node -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/qt-out/resolved.json','utf8')).win_arch)")
+
+          echo ">>> Installing Qt $VER qtbase ($LINUX_ARCH) -> /tmp/qt-linux"
+          aqt install-qt linux desktop "$VER" "$LINUX_ARCH" --archives qtbase -O /tmp/qt-linux
+
+          echo ">>> Installing Qt $VER qtbase ($WIN_ARCH) -> /tmp/qt-win"
+          aqt install-qt windows desktop "$VER" "$WIN_ARCH" --archives qtbase -O /tmp/qt-win
+
+          pack_target() {
+            local root_dir="$1"
+            local logical="$2"
+            local arch_label="$3"
+
+            local arch_dir
+            arch_dir=$(find "${root_dir}/${VER}" -mindepth 1 -maxdepth 1 -type d | head -n 1 || true)
+            if [ -z "$arch_dir" ] || [ ! -d "$arch_dir" ]; then
+              echo "ERROR: Could not find installed Qt arch dir under ${root_dir}/${VER}"
+              ls -la "${root_dir}" || true
+              exit 1
+            fi
+
+            local raw_bytes
+            raw_bytes=$(du -sb "$arch_dir" | awk '{print $1}')
+
+            # Debloat: strip *.pdb, doc/, examples/, tests/ if present
+            find "$arch_dir" -type f -iname '*.pdb' -delete || true
+            find "$arch_dir" -type d \( -name 'doc' -o -name 'examples' -o -name 'tests' \) -exec rm -rf {} + || true
+
+            local out_archive="/tmp/qt-out/${logical}"
+            tar -C "$arch_dir" -cf - . | zstd -q -9 -T0 -o "$out_archive"
+            local debloated_bytes
+            debloated_bytes=$(stat -c%s "$out_archive")
+            local sha
+            sha=$(sha256sum "$out_archive" | awk '{print $1}')
+            cp "$out_archive" "/tmp/qt-out/${sha}"
+            rm -rf "$root_dir"
+
+            local saved=$((raw_bytes - debloated_bytes))
+            echo "    $logical ($arch_label): $raw_bytes B (installed) -> $debloated_bytes B (debloated zst) | saved=$saved B | sha256=${sha:0:12}..."
+
+            node -e "
+              const fs = require('fs');
+              fs.writeFileSync('/tmp/qt-out/${logical}.meta.json', JSON.stringify({
+                filename: '${logical}',
+                sha256: '${sha}',
+                bytes: ${debloated_bytes},
+                raw_bytes: ${raw_bytes},
+                version: '${VER}',
+                category: 'qt6-upstream',
+                download_url: 'https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/${sha}'
+              }, null, 2));
+            "
+          }
+
+          pack_target "/tmp/qt-linux" "qt6-base-linux-x64.tar.zst" "$LINUX_ARCH"
+          pack_target "/tmp/qt-win" "qt6-base-win64.tar.zst" "$WIN_ARCH"
+
+          BLOBS=$(find /tmp/qt-out -maxdepth 1 -type f -regextype posix-extended -regex '.*/[a-f0-9]{64}')
+          gh release upload cas-v1 $BLOBS --repo awesome-os/b8g-ghost --clobber
+
+      - name: Commit Updated manifests/index.json to Git
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          merge_manifest() {
+            node -e "
+              const fs = require('fs');
+              const path = require('path');
+              const idx = JSON.parse(fs.readFileSync('manifests/index.json', 'utf8'));
+              for (const f of fs.readdirSync('/tmp/qt-out').filter(x => x.endsWith('.meta.json')).sort()) {
+                const m = JSON.parse(fs.readFileSync(path.join('/tmp/qt-out', f), 'utf8'));
+                const prev = idx.entries[m.filename];
+                const history = Array.isArray(prev?.history) ? [...prev.history] : [];
+                if (prev && prev.sha256 && prev.sha256 !== m.sha256) {
+                  history.unshift({
+                    sha256: prev.sha256,
+                    bytes: prev.bytes,
+                    version: prev.version || 'prev',
+                    retired_at: new Date().toISOString()
+                  });
+                }
+                idx.entries[m.filename] = {
+                  filename: m.filename,
+                  sha256: m.sha256,
+                  bytes: m.bytes,
+                  raw_bytes: m.raw_bytes,
+                  version: m.version,
+                  category: m.category,
+                  download_url: m.download_url,
+                  ...(history.length > 0 ? { history: history.slice(0, 5) } : {})
+                };
+              }
+              const sorted = {};
+              for (const k of Object.keys(idx.entries).sort()) sorted[k] = idx.entries[k];
+              idx.entries = sorted;
+              idx.total_entries = Object.keys(sorted).length;
+              idx.updated_at = new Date().toISOString();
+              fs.writeFileSync('manifests/index.json', JSON.stringify(idx, null, 2) + '\n');
+              console.log('[qt-cas] Updated manifests/index.json -> total_entries=' + idx.total_entries);
+            "
+          }
+
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            git reset --hard origin/main
+            merge_manifest
+            git add manifests/index.json
+            if git diff --cached --quiet; then
+              echo "[qt-cas] No manifest changes to commit."
+              exit 0
+            fi
+            git commit -m "feat(cas-v1): roll debloated Qt6 Base into canonical Ghost CAS"
+            if git pull --rebase origin main && git push origin main; then
+              exit 0
+            fi
+            git rebase --abort || true
+            echo "[qt-cas] Push/rebase conflict on attempt $attempt, retrying..."
+            sleep 3
+          done
+          echo "ERROR: Failed to push manifests/index.json after 5 attempts"
+          exit 1
