@@ -45,7 +45,7 @@ jobs:
           HOLO_5OS_TAG: ${{ inputs.holo_5os_tag || 'v0.2.0-holo-5os' }}
           TOOLCHAINS_TAG: ${{ inputs.toolchains_tag || 'v0.1.0-ghost-toolchains' }}
         run: |
-          mkdir -p /tmp/cas-in/baseline /tmp/cas-in/holo5os /tmp/cas-in/toolchains /tmp/cas-upload manifests
+          mkdir -p /tmp/cas-in/baseline /tmp/cas-in/shards /tmp/cas-in/holo5os /tmp/cas-in/toolchains /tmp/cas-in/downstream /tmp/cas-upload manifests
 
           # Fetch existing cas-v1 asset names so already-uploaded SHA-256 blobs are skipped in O(1)
           gh release view cas-v1 --repo awesome-os/b8g-ghost --json assets -q '.assets[].name' > /tmp/existing-cas.txt || true
@@ -53,11 +53,19 @@ jobs:
           echo "Downloading baseline ($BASELINE_TAG)..."
           gh release download "$BASELINE_TAG" --repo awesome-os/sectium-browser --dir /tmp/cas-in/baseline --clobber || true
 
+          echo "Downloading 10 Chromium shards (v0.6.0-chromium-shards)..."
+          gh release download "v0.6.0-chromium-shards" --repo awesome-os/sectium-browser --pattern "*.tar.gz" --dir /tmp/cas-in/shards --clobber || true
+
           echo "Downloading holo-5os ($HOLO_5OS_TAG)..."
           gh release download "$HOLO_5OS_TAG" --repo awesome-os/upstream-mirrors --dir /tmp/cas-in/holo5os --clobber || true
 
-          echo "Downloading ghost-toolchains ($TOOLCHAINS_TAG)..."
-          gh release download "$TOOLCHAINS_TAG" --repo awesome-os/upstream-mirrors --pattern "ghost-zig*" --pattern "ghost-ninja*" --pattern "ghost-winsdk*" --dir /tmp/cas-in/toolchains --clobber || true
+          echo "Downloading ALL ghost-toolchains ($TOOLCHAINS_TAG including LLVM 23.1.6)..."
+          gh release download "$TOOLCHAINS_TAG" --repo awesome-os/upstream-mirrors --pattern "ghost-*" --dir /tmp/cas-in/toolchains --clobber || true
+
+          echo "Downloading downstream AI/app packs (b8g-micro-moe, b8g-app-dedup, b8g-production-rack)..."
+          gh release download --repo awesome-os/b8g-micro-moe --pattern "algebra-router.b8p" --dir /tmp/cas-in/downstream --clobber || true
+          gh release download --repo awesome-os/b8g-app-dedup --pattern "app-paths.b8p" --dir /tmp/cas-in/downstream --clobber || true
+          gh release download --repo awesome-os/b8g-production-rack --pattern "b8g-production-rack-win64.zip" --dir /tmp/cas-in/downstream --clobber || true
 
           node -e "
             const fs = require('fs');
@@ -69,8 +77,10 @@ jobs:
             const toUpload = [];
             const sources = [
               { dir: '/tmp/cas-in/baseline', category: 'baseline' },
+              { dir: '/tmp/cas-in/shards', category: 'chromium-shard' },
               { dir: '/tmp/cas-in/holo5os', category: 'holo-5os' },
               { dir: '/tmp/cas-in/toolchains', category: 'toolchain' },
+              { dir: '/tmp/cas-in/downstream', category: 'downstream-pack' },
             ];
 
             for (const src of sources) {
