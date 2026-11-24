@@ -2,8 +2,8 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T00:36:42.589Z",
-  "total_entries": 65,
+  "updated_at": "2026-11-24T00:43:17.835Z",
+  "total_entries": 92,
   "entries": {
     "01-browser-split-shell.exe": {
       "filename": "01-browser-split-shell.exe",
@@ -61,6 +61,20 @@
       "category": "baseline",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4ab09aeaedd19718cc8cef5b8ff0eabc092acbc583e5020491ef0612a14fe7d4"
     },
+    "algebra-router.b8p": {
+      "filename": "algebra-router.b8p",
+      "sha256": "df8b085b514cad58ae65d35578f2425c53767ce85b09e0a552ea92d76bced136",
+      "bytes": 55028,
+      "category": "downstream-pack",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/df8b085b514cad58ae65d35578f2425c53767ce85b09e0a552ea92d76bced136"
+    },
+    "app-paths.b8p": {
+      "filename": "app-paths.b8p",
+      "sha256": "b7524c7d1934635f516f158c6ba608dd6002a81672201751159aefb9259cdecf",
+      "bytes": 42192,
+      "category": "downstream-pack",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/b7524c7d1934635f516f158c6ba608dd6002a81672201751159aefb9259cdecf"
+    },
     "args-linux-x64.gn": {
       "filename": "args-linux-x64.gn",
       "sha256": "dc42f7cb5425fbf89fdb80fb1dd1442386705446f3022230a7ca10ed9cd6a80d",
@@ -81,6 +95,13 @@
       "bytes": 13081,
       "category": "baseline",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/cfc0c2de22352f24104e9b8c104a771202ed780b6b84fae960aec51ecd83b633"
+    },
+    "b8g-production-rack-win64.zip": {
+      "filename": "b8g-production-rack-win64.zip",
+      "sha256": "f60a1ba49b7b24104806cf9fd05eee318a03d84c8b4ffda4430e36bcb77f123a",
+      "bytes": 50110,
+      "category": "downstream-pack",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f60a1ba49b7b24104806cf9fd05eee318a03d84c8b4ffda4430e36bcb77f123a"
     },
     "b8g-shim-linux-arm64": {
       "filename": "b8g-shim-linux-arm64",
@@ -110,6 +131,34 @@
       "category": "baseline",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4e916c764be73cbaf50f04c518c74b05451efe91d1d9c6804207702b5f7b5748"
     },
+    "boringssl-include-289645a.tar.gz": {
+      "filename": "boringssl-include-289645a.tar.gz",
+      "sha256": "ffacff96a4621f1dd031745305ce18b7bff8ee8f2a2d6bbe7cef2d1287facd60",
+      "bytes": 477567,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/ffacff96a4621f1dd031745305ce18b7bff8ee8f2a2d6bbe7cef2d1287facd60"
+    },
+    "boringssl-shared-linux-x64.tar.gz": {
+      "filename": "boringssl-shared-linux-x64.tar.gz",
+      "sha256": "f8781bc889035faef5bad8a530ba79e78d0748bbb4ceedb62c66a916a960579a",
+      "bytes": 6317130,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f8781bc889035faef5bad8a530ba79e78d0748bbb4ceedb62c66a916a960579a"
+    },
+    "brotli-include-fed075f.tar.gz": {
+      "filename": "brotli-include-fed075f.tar.gz",
+      "sha256": "cf4d347aa795e8a003e700f56d7ee846ffc9b37e69cca80ae0c295a2f8c6f109",
+      "bytes": 12532,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/cf4d347aa795e8a003e700f56d7ee846ffc9b37e69cca80ae0c295a2f8c6f109"
+    },
+    "brotli-shared-linux-x64.tar.gz": {
+      "filename": "brotli-shared-linux-x64.tar.gz",
+      "sha256": "f75127bf68a556a550ebfa1b9206635ec8c01fd245f54f62cd3fc2ea21467ff0",
+      "bytes": 494357,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f75127bf68a556a550ebfa1b9206635ec8c01fd245f54f62cd3fc2ea21467ff0"
+    },
     "bun-neon-v8.exe": {
       "filename": "bun-neon-v8.exe",
       "sha256": "0c90fea2ce8bae2a75303e4a77246ee5498dbbcb8f87ba12ccef8300fa01b195",
@@ -124,6 +173,34 @@
       "category": "baseline",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/628b3dd4f087d4b315ae79e2633a84fb95706dea069f74df06f5d8444520d223"
     },
+    "expat-include-0d6dacc.tar.gz": {
+      "filename": "expat-include-0d6dacc.tar.gz",
+      "sha256": "1d5c448ad89641c98e22e5117b81bdcc86266c28024a9ebdeaa9c1f006df1d0b",
+      "bytes": 15661,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/1d5c448ad89641c98e22e5117b81bdcc86266c28024a9ebdeaa9c1f006df1d0b"
+    },
+    "expat-shared-linux-x64.tar.gz": {
+      "filename": "expat-shared-linux-x64.tar.gz",
+      "sha256": "13864bf477134b19226245f50ec6e8351f94702ee98ce99c210e3fc79be7022d",
+      "bytes": 89843,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/13864bf477134b19226245f50ec6e8351f94702ee98ce99c210e3fc79be7022d"
+    },
+    "freetype-include-504159f.tar.gz": {
+      "filename": "freetype-include-504159f.tar.gz",
+      "sha256": "220d348d0c65121a4d59129b41e42812dbed6e82e850e9122a6b5fc86c530751",
+      "bytes": 270091,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/220d348d0c65121a4d59129b41e42812dbed6e82e850e9122a6b5fc86c530751"
+    },
+    "freetype-shared-linux-x64.tar.gz": {
+      "filename": "freetype-shared-linux-x64.tar.gz",
+      "sha256": "bb11dfe372811d208871804b16add6f1139610e9f66060425cf1fd913960d68d",
+      "bytes": 441097,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/bb11dfe372811d208871804b16add6f1139610e9f66060425cf1fd913960d68d"
+    },
     "ghost-4os-manifest.json": {
       "filename": "ghost-4os-manifest.json",
       "sha256": "71f315d0bdfafdfeb5266e12d1f77d12be53c8f08934a6f3d3486266b4595735",
@@ -137,6 +214,20 @@
       "bytes": 5703,
       "category": "holo-5os",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/6bf095c2b66ff3901a8dab60b95106b65bef8c3f06cb5fbb6d1fcc6421dbb6c4"
+    },
+    "ghost-llvm-23.1.6-full-linux-x64.tar.zst": {
+      "filename": "ghost-llvm-23.1.6-full-linux-x64.tar.zst",
+      "sha256": "da1ba538c9e52ea410771c06ef0214ad393cba67f3b59ea4fc16855c3c07855c",
+      "bytes": 1604295402,
+      "category": "toolchain",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/da1ba538c9e52ea410771c06ef0214ad393cba67f3b59ea4fc16855c3c07855c"
+    },
+    "ghost-llvm-23.1.6-full-win64.tar.zst": {
+      "filename": "ghost-llvm-23.1.6-full-win64.tar.zst",
+      "sha256": "5d3b023b7e6b75c1db45ae295855e80103b22f09a819001940af578bd65183b5",
+      "bytes": 1047204348,
+      "category": "toolchain",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/5d3b023b7e6b75c1db45ae295855e80103b22f09a819001940af578bd65183b5"
     },
     "ghost-ninja-1.12.1-linux-x64.zip": {
       "filename": "ghost-ninja-1.12.1-linux-x64.zip",
@@ -170,7 +261,7 @@
       "filename": "ghost-toolchains-manifest.json",
       "sha256": "bf95c2532c83eac706523092be9d39ec8c218eb289995253ae9096faf895e012",
       "bytes": 3613,
-      "category": "baseline",
+      "category": "toolchain",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/bf95c2532c83eac706523092be9d39ec8c218eb289995253ae9096faf895e012"
     },
     "ghost-winsdk-msvc-x64.tar.zst": {
@@ -228,6 +319,20 @@
       "bytes": 24064,
       "category": "baseline",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/fd49e165293174e774f3bb936213c3d7ffda9eaeb7514f8c2d22360ecac4b854"
+    },
+    "harfbuzz-include-ce0a123.tar.gz": {
+      "filename": "harfbuzz-include-ce0a123.tar.gz",
+      "sha256": "ae91dcfd03c89cc05100f100aebba107d56a53baef166f1a3a806730a1cac328",
+      "bytes": 78135,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/ae91dcfd03c89cc05100f100aebba107d56a53baef166f1a3a806730a1cac328"
+    },
+    "harfbuzz-shared-linux-x64.tar.gz": {
+      "filename": "harfbuzz-shared-linux-x64.tar.gz",
+      "sha256": "deb7ae9542ea216e58b5740b8b326c499364d25478ccafdf1608cf9060cb02fb",
+      "bytes": 746152,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/deb7ae9542ea216e58b5740b8b326c499364d25478ccafdf1608cf9060cb02fb"
     },
     "libbrotli-linux-arm64.so": {
       "filename": "libbrotli-linux-arm64.so",
@@ -298,6 +403,34 @@
       "bytes": 200704,
       "category": "holo-5os",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f553d8d1dcab427235c21955f33e4ad1b971211ab21de1377c48242026a3fb34"
+    },
+    "libjpeg-turbo-include-1631763.tar.gz": {
+      "filename": "libjpeg-turbo-include-1631763.tar.gz",
+      "sha256": "8785d63a80ea474bcd0923e726c716af0106556a272c4feacd076da65ab8612a",
+      "bytes": 46445,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8785d63a80ea474bcd0923e726c716af0106556a272c4feacd076da65ab8612a"
+    },
+    "libjpeg-turbo-shared-linux-x64.tar.gz": {
+      "filename": "libjpeg-turbo-shared-linux-x64.tar.gz",
+      "sha256": "8e4d0448e7079d17369bc8a7aaccb6ce381a43b42e9ecf954ea5427229aa103e",
+      "bytes": 676061,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8e4d0448e7079d17369bc8a7aaccb6ce381a43b42e9ecf954ea5427229aa103e"
+    },
+    "libpng-include-73a6865.tar.gz": {
+      "filename": "libpng-include-73a6865.tar.gz",
+      "sha256": "f05aad0e70cd83ede39293fa30212f111d2b707d492f351af6fc183d95166d7e",
+      "bytes": 43304,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/f05aad0e70cd83ede39293fa30212f111d2b707d492f351af6fc183d95166d7e"
+    },
+    "libpng-shared-linux-x64.tar.gz": {
+      "filename": "libpng-shared-linux-x64.tar.gz",
+      "sha256": "b54f0a8824b2f640718d50cff30fc0064b9c1ae0c313d2ddba84c508ae73e2b3",
+      "bytes": 130582,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/b54f0a8824b2f640718d50cff30fc0064b9c1ae0c313d2ddba84c508ae73e2b3"
     },
     "libsectium_display-linux-arm64.so": {
       "filename": "libsectium_display-linux-arm64.so",
@@ -376,6 +509,20 @@
       "category": "holo-5os",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/ce67cda162f4ee8e7c89e01653bad3525bb9cab6a2b40191dbc39c6d1469bf8c"
     },
+    "libwebp-include-f054d0c.tar.gz": {
+      "filename": "libwebp-include-f054d0c.tar.gz",
+      "sha256": "de5d09689d2fb5e25d5182cb6c2870e263d68d5ae61679c1ab2fa4a3b690c4f4",
+      "bytes": 28032,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/de5d09689d2fb5e25d5182cb6c2870e263d68d5ae61679c1ab2fa4a3b690c4f4"
+    },
+    "libwebp-include-fdee9a8.tar.gz": {
+      "filename": "libwebp-include-fdee9a8.tar.gz",
+      "sha256": "3df40132bd2d5f4899474befad9b502dccb762ffbe0cc2a96e1894a9bfd9d62e",
+      "bytes": 28033,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/3df40132bd2d5f4899474befad9b502dccb762ffbe0cc2a96e1894a9bfd9d62e"
+    },
     "libwebp-linux-arm64.so": {
       "filename": "libwebp-linux-arm64.so",
       "sha256": "21565c15cd0464650f8b8d05ca728b730cfa3a7d9b8a9c565fbb4984b9e5f9dd",
@@ -396,6 +543,13 @@
       "bytes": 603448,
       "category": "holo-5os",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/fcf6818f1d3854e0a4e4a366e96380d5de538ba81f397b5bd29cd8e48ddbc98a"
+    },
+    "libwebp-shared-linux-x64.tar.gz": {
+      "filename": "libwebp-shared-linux-x64.tar.gz",
+      "sha256": "8cf5d845499abeddc23826f0b651e5d97b52973c07fc681f139c6301acc35a2d",
+      "bytes": 359591,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/8cf5d845499abeddc23826f0b651e5d97b52973c07fc681f139c6301acc35a2d"
     },
     "libwebp-wasm32-wasi.wasm": {
       "filename": "libwebp-wasm32-wasi.wasm",
@@ -432,6 +586,20 @@
       "category": "baseline",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/7c820b6b557a4366358a3bcdf4c8ec4873061ceb249780af81962744f8bb611f"
     },
+    "sqlite3-include-3490100.tar.gz": {
+      "filename": "sqlite3-include-3490100.tar.gz",
+      "sha256": "5bb066b7a1898a5a0d62ba9f39da539415e47cf10f198032b6f4f63aac2b9bc1",
+      "bytes": 176933,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/5bb066b7a1898a5a0d62ba9f39da539415e47cf10f198032b6f4f63aac2b9bc1"
+    },
+    "sqlite3-shared-linux-x64.tar.gz": {
+      "filename": "sqlite3-shared-linux-x64.tar.gz",
+      "sha256": "42a59b7f82b7502d35cdc681643e32a69910bf416d20b430fed3f489f7f49f28",
+      "bytes": 821733,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/42a59b7f82b7502d35cdc681643e32a69910bf416d20b430fed3f489f7f49f28"
+    },
     "v8-include-eaf3708a.tar.gz": {
       "filename": "v8-include-eaf3708a.tar.gz",
       "sha256": "5df70d97db94eb9163b8baa26fc35d53a355140405281f4bb9c82315c9adc1c1",
@@ -459,6 +627,27 @@
       "bytes": 25210844,
       "category": "baseline",
       "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/1be3760e89a4b04b03aadb8a5071febf1fdcebc80bbe97f4c519cae8118364cb"
+    },
+    "zlib-include-47b9b95.tar.gz": {
+      "filename": "zlib-include-47b9b95.tar.gz",
+      "sha256": "a820550eb3bc571b5d51a9a12b93ce4037fd7d1167c570caffcd23c38052a9db",
+      "bytes": 28956,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/a820550eb3bc571b5d51a9a12b93ce4037fd7d1167c570caffcd23c38052a9db"
+    },
+    "zlib-include-bc98d84.tar.gz": {
+      "filename": "zlib-include-bc98d84.tar.gz",
+      "sha256": "2b72781eeed2b6b41e1db2c0b56a97bc70fb5b4a75cabe2e6610550155089e23",
+      "bytes": 28958,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/2b72781eeed2b6b41e1db2c0b56a97bc70fb5b4a75cabe2e6610550155089e23"
+    },
+    "zlib-shared-linux-x64.tar.gz": {
+      "filename": "zlib-shared-linux-x64.tar.gz",
+      "sha256": "4e5454ca4168b5d0f2e4746f1ea9a419e21874a6015f5e3c1a7c28892f6dc5d1",
+      "bytes": 107054,
+      "category": "chromium-shard",
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/4e5454ca4168b5d0f2e4746f1ea9a419e21874a6015f5e3c1a7c28892f6dc5d1"
     }
   }
 }
