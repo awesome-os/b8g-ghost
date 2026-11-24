@@ -2,7 +2,7 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T03:29:09.2705026Z",
+  "updated_at": "2026-11-24T03:35:58.2166605Z",
   "total_entries": 130,
   "entries": {
     "01-browser-split-shell.exe": {
@@ -938,11 +938,21 @@
     },
     "code-oss.exe": {
       "filename": "code-oss.exe",
-      "sha256": "933f99cd68d4442cf876e08cf7c53b73e98185c26ef0f5bd14387218a369f70a",
-      "bytes": 119808,
+      "sha256": "57757d03cb4a3da0d89e4a61d042c70ee79a44d6d4f06856a3389b3b64b9aef1",
+      "bytes": 120320,
       "version": "0.2.0",
       "category": "code-oss-launcher",
-      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/933f99cd68d4442cf876e08cf7c53b73e98185c26ef0f5bd14387218a369f70a"
+      "download_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1/57757d03cb4a3da0d89e4a61d042c70ee79a44d6d4f06856a3389b3b64b9aef1",
+      "history": [
+        [
+          {
+            "sha256": "933f99cd68d4442cf876e08cf7c53b73e98185c26ef0f5bd14387218a369f70a",
+            "bytes": 119808,
+            "version": "0.2.0-pre",
+            "retired_at": "2026-11-24T03:35:58.2100632Z"
+          }
+        ]
+      ]
     }
   }
 }
