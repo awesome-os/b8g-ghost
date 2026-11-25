@@ -2,7 +2,7 @@
   "schema": "b8g-ghost-cas-index-v1",
   "cas_base_url": "https://github.com/awesome-os/b8g-ghost/releases/download/cas-v1",
   "baseline_tag": "v0.6.1-baseline",
-  "updated_at": "2026-11-24T21:02:01.151Z",
+  "updated_at": "2026-11-25T15:04:34.301Z",
   "total_entries": 156,
   "entries": {
     "01-browser-split-shell.exe": {
